@@ -23,7 +23,7 @@
             Company Information
           </v-stepper-step>
           <v-stepper-content step="3">
-            <CompanyInformationForm @back="cancel2" @submit="submitAll"/>
+            <CompanyInformationForm @back ="cancel2" @submit="submitAll"/>
           </v-stepper-content>
         </v-stepper>
       </v-card>
@@ -44,7 +44,8 @@ export default {
       Stepper: 1,
       LoginDetails: {},
       PersonalInformation: {},
-      Others: {}
+      Others: {},
+      Data: {}
     }
   },
   computed: {
@@ -59,6 +60,7 @@ export default {
     submitPersonal (value) {
       this.PersonalInformation = value
       this.Stepper = 3
+      console.log(this.PersonalInformation)
     },
     cancel1 (value) {
       this.Stepper = value
@@ -68,6 +70,14 @@ export default {
     },
     submitAll (value) {
       this.Others = value
+      for (let key in this.LoginDetails) {
+        this.Data[key] = this.LoginDetails[key]
+      }
+      for (let key in this.PersonalInformation) {
+        this.Data[key] = this.PersonalInformation[key]
+      }
+      this.Data['Others'] = this.Others
+      console.log(this.Data)
     }
   },
   components: {
