@@ -17,7 +17,13 @@
             Personal Information
           </v-stepper-step>
           <v-stepper-content step="2">
-            <PersonalInformationForm/>
+            <PersonalInformationForm @submit="submitPersonal" @cancel="cancel1"/>
+          </v-stepper-content>
+          <v-stepper-step step="3">
+            Company Information
+          </v-stepper-step>
+          <v-stepper-content step="3">
+            <CompanyInformationForm @back="cancel2" @submit="submitAll"/>
           </v-stepper-content>
         </v-stepper>
       </v-card>
@@ -29,14 +35,16 @@
 <script>
 import LoginDetailsForm from './Forms/LoginDetailsForm'
 import PersonalInformationForm from './Forms/PersonalInformationForm'
+import CompanyInformationForm from './Forms/CompanyInformationForm'
 
 export default {
-
   name: 'SignUp',
   data () {
     return {
       Stepper: 1,
-      LoginDetails: {}
+      LoginDetails: {},
+      PersonalInformation: {},
+      Others: {}
     }
   },
   computed: {
@@ -47,11 +55,25 @@ export default {
       this.LoginDetails = value
       this.Stepper = 2
       console.log(this.LoginDetails)
+    },
+    submitPersonal (value) {
+      this.PersonalInformation = value
+      this.Stepper = 3
+    },
+    cancel1 (value) {
+      this.Stepper = value
+    },
+    cancel2 (value) {
+      this.Stepper = value
+    },
+    submitAll (value) {
+      this.Others = value
     }
   },
   components: {
     LoginDetailsForm,
-    PersonalInformationForm
+    PersonalInformationForm,
+    CompanyInformationForm
   }
 }
 </script>

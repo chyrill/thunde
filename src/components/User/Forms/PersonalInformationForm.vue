@@ -12,7 +12,7 @@
         <v-flex xs10 offset-xs1>
           <v-text-field label="Middle Name" v-model="MiddleName"></v-text-field>
         </v-flex>
-        <div v-if="DeviceHeight >= 960">
+        <div v-if="DeviceHeight >= 760">
         <v-flex xs10 offset-xs1>
           <v-layout>
           <v-flex xs6>
@@ -42,7 +42,7 @@
               <v-text-field label="Mobile Number" v-model="MobileNumber" :error-messages="mobileNumberErrors" @input="$v.MobileNumber.$touch()" @blur="$v.MobileNumber.$touch()" required></v-text-field>
             </v-flex>
             <v-flex xs4>
-              <v-text-field label="Phone Number" v-model="PhoneNumber" :error-messages="phoneNumberErrors" @input="$v.PhoneNumber.$touch()" @blur="$v.PhoneNumber.$touch()"></v-text-field>
+              <v-text-field label="Phone Number" v-model="PhoneNumber"></v-text-field>
             </v-flex>
             <v-flex xs4>
               <v-text-field label="Zip Code" v-model="ZipCode" :error-messages="zipCodeErrors" @input="$v.ZipCode.$touch()" @blur="$v.ZipCode.$touch()" required ></v-text-field>
@@ -53,7 +53,7 @@
       </v-container>
     </v-form>
   </v-card>
-  <v-btn><v-icon left>navigate_before</v-icon> back</v-btn>  <v-btn color="indigo" :click="submit":disabled="$v.$invalid">next<v-icon right>navigate_next</v-icon></v-btn>
+  <v-btn @click="cancel"><v-icon left>navigate_before</v-icon> back</v-btn>  <v-btn color="indigo" @click="submit":disabled="$v.$invalid">next<v-icon right>navigate_next</v-icon></v-btn>
 </div>
 </template>
 
@@ -105,7 +105,7 @@ export default {
       MiddleName: '',
       Address1: '',
       Address2: '',
-      DeviceHeight: document.documentElement.clientHeight,
+      DeviceHeight: document.documentElement.clientWidth,
       City: '',
       State: '',
       Country: '',
@@ -196,15 +196,17 @@ export default {
   },
   methods: {
     HandleResize (event) {
-      this.DeviceHeight = document.documentElement.clientHeight
+      this.DeviceHeight = document.documentElement.clientWidth
       console.log(this.DeviceHeight)
     },
     submit () {
       for (let key in this.Data) {
         this.Data[key] = this[key]
       }
-      console.log(this.Data)
       this.$emit('submit', this.Data)
+    },
+    cancel () {
+      this.$emit('cancel', 1)
     }
   }
 }
