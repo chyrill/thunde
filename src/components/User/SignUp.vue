@@ -13,7 +13,7 @@
           <v-stepper-content step="1">
             <LoginDetailsForm @submit="getData" />
           </v-stepper-content>
-          <v-stepper-step step="2">
+          <v-stepper-step step="2" :complete ="Stepper > 2">
             Personal Information
           </v-stepper-step>
           <v-stepper-content step="2">

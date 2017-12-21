@@ -10,7 +10,7 @@
           <v-text-field label="First Name" v-model="FirstName" :error-messages="firstNameErrors" @input="$v.FirstName.$touch()" @blur="$v.FirstName.$touch()" required></v-text-field>
         </v-flex>
         <v-flex xs10 offset-xs1>
-          <v-text-field label="Middle Name" v-model="MiddleName" :error-messages="middleNameErrors" @input="$v.MiddleName.$touch()" @blur="$v.MiddleName.$touch()" ></v-text-field>
+          <v-text-field label="Middle Name" v-model="MiddleName"></v-text-field>
         </v-flex>
         <div v-if="DeviceHeight >= 960">
         <v-flex xs10 offset-xs1>
@@ -19,7 +19,7 @@
             <v-text-field label="Address 1" v-model="Address1" :error-messages="address1Errors" @input="$v.Address1.$touch()" @blur="$v.Address1.$touch()" ></v-text-field>
           </v-flex>
           <v-flex xs6>
-            <v-text-field label="Address 2" v-model="Address2" :error-messages="address2Errors" @input="$v.Address2.$touch()" @blur="$v.Address2.$touch()" ></v-text-field>
+            <v-text-field label="Address 2" v-model="Address2" ></v-text-field>
           </v-flex>
         </v-layout>
         </v-flex>
@@ -53,7 +53,7 @@
       </v-container>
     </v-form>
   </v-card>
-  <v-btn><v-icon left>navigate_before</v-icon> back</v-btn>  <v-btn color="indigo">next<v-icon right>navigate_next</v-icon></v-btn>
+  <v-btn><v-icon left>navigate_before</v-icon> back</v-btn>  <v-btn color="indigo" :click="submit":disabled="$v.$invalid">next<v-icon right>navigate_next</v-icon></v-btn>
 </div>
 </template>
 
@@ -111,7 +111,20 @@ export default {
       Country: '',
       MobileNumber: '',
       PhoneNumber: '',
-      ZipCode: ''
+      ZipCode: '',
+      Data: {
+        LastName: '',
+        FirstName: '',
+        MiddleName: '',
+        Address1: '',
+        Address2: '',
+        City: '',
+        State: '',
+        Country: '',
+        MobileNumber: '',
+        PhoneNumber: '',
+        ZipCode: ''
+      }
     }
   },
   ready: function () {
@@ -185,6 +198,13 @@ export default {
     HandleResize (event) {
       this.DeviceHeight = document.documentElement.clientHeight
       console.log(this.DeviceHeight)
+    },
+    submit () {
+      for (let key in this.Data) {
+        this.Data[key] = this[key]
+      }
+      console.log(this.Data)
+      this.$emit('submit', this.Data)
     }
   }
 }
