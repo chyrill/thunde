@@ -11,38 +11,13 @@
             Login Credentials
           </v-stepper-step>
           <v-stepper-content step="1">
-            <v-card>
-            <v-form ref="form" lazy-validation>
-              <v-container grid-list-xs>
-                <v-flex xs10 offset-xs1>
-                  <v-text-field label="Email" v-model="Email" :error-messages="emailErrors" @input="$v.Email.$touch()" @blur="$v.Email.$touch()" required></v-text-field>
-                </v-flex>
-                <v-flex xs10 offset-xs1>
-                  <v-text-field label="Password" type="password" v-model="Password" :error-messages="passwordErrors" @input="$v.Password.$touch()" @blur="$v.Password.$touch()" required></v-text-field>
-                </v-flex>
-                <v-flex xs10 offset-xs1>
-                  <v-text-field label="Confirm Password" type="password" v-model="ConfirmPassword" :error-messages="confirmPasswordErrors" @input="$v.ConfirmPassword.$touch()" @blur="$v.ConfirmPassword.$touch()" required></v-text-field>
-                </v-flex>
-              </v-container>
-            </v-form>
-          </v-card>
-          <v-spacer></v-spacer>
-          <v-btn color="indigo" @click.native="Stepper=2" :disabled="$v.$invalid">Next <v-icon right>navigate_next</v-icon></v-btn>
+            <LoginDetailsForm @submit="getData" />
           </v-stepper-content>
           <v-stepper-step step="2">
             Personal Information
           </v-stepper-step>
           <v-stepper-content step="2">
-            <v-card>
-              <v-form>
-                <v-container grid-list-xs>
-                  <v-flex xs10 offset-xs1>
-                    <v-text-field label="Last Name" v-model="LastName" :error-messages="lastNameErrors" @input="$v.LastName.$touch()" @blur="$v.LastName.$touch()" required></v-text-field>
-                  </v-flex>
-                </v-container>
-              </v-form>
-            </v-card>
-            <v-btn color="indigo" @click.native="Stepper=3" :disabled="$v.$invalid"> Next <v-icon right>navigate_next</v-icon> </v-btn>
+            <PersonalInformationForm/>
           </v-stepper-content>
         </v-stepper>
       </v-card>
@@ -52,79 +27,31 @@
 </template>
 
 <script>
-import {
-  validationMixin
-} from 'vuelidate'
-
-import {
-  required,
-  minLength,
-  email,
-  sameAs
-} from 'vuelidate/lib/validators'
+import LoginDetailsForm from './Forms/LoginDetailsForm'
+import PersonalInformationForm from './Forms/PersonalInformationForm'
 
 export default {
-  mixins: [validationMixin],
-  validations: {
-    Email: {
-      required,
-      email
-    },
-    Password: {
-      required,
-      minLength: minLength(6)
-    },
-    ConfirmPassword: {
-      required,
-      minLength: minLength(6),
-      samePassword: sameAs('Password')
-    },
-    LastName: {
-      required
-    }
-  },
+
   name: 'SignUp',
   data () {
     return {
       Stepper: 1,
-      valid: false,
-      Email: '',
-      Password: '',
-      ConfirmPassword: '',
-      LastName: ''
+      LoginDetails: {}
     }
   },
   computed: {
-    emailErrors () {
-      const errors = []
-      if (!this.$v.Email.$dirty) return errors
-      !this.$v.Email.email && errors.push('Must be valid e-mail')
-      !this.$v.Email.required && errors.push('E-mail is required')
-      return errors
-    },
-    passwordErrors () {
-      const errors = []
-      if (!this.$v.Password.$dirty) return errors
-      !this.$v.Password.required && errors.push('Password is required')
-      !this.$v.Password.minLength && errors.push('Password minimum length is 6')
-      return errors
-    },
-    confirmPasswordErrors () {
-      const errors = []
-      if (!this.$v.ConfirmPassword.$dirty) return errors
-      !this.$v.ConfirmPassword.required && errors.push('This is required')
-      !this.$v.ConfirmPassword.minLength && errors.push('minimum length is 6')
-      !this.$v.ConfirmPassword.samePassword && errors.push("Password doesn't match")
-      return errors
-    },
-    lastNameErrors () {
-      const errors = []
-      if (!this.$v.LastName.$dirty) return errors
-      !this.$v.LastName.required && errors.push('Last name is required')
-      return errors
-    }
+
   },
   methods: {
+    getData (value) {
+      this.LoginDetails = value
+      this.Stepper = 2
+      console.log(this.LoginDetails)
+    }
+  },
+  components: {
+    LoginDetailsForm,
+    PersonalInformationForm
   }
 }
 </script>
