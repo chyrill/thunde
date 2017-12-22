@@ -88,12 +88,14 @@ export default {
       for (let key in this.PersonalInformation) {
         this.Data[key] = this.PersonalInformation[key]
       }
+      this.Data['Context'] = this.$store.getters.getContext
       this.Data['Others'] = this.Others
       console.log(this.Data)
 
       axios.post('http://localhost:3000/api/v1/userLogin/signup', {body: this.Data})
         .then(response => {
           console.log(response)
+          this.$router.push('/')
         })
         .catch(err => {
           this.Errors = err.response.data.message
