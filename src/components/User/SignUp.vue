@@ -29,6 +29,7 @@
       </v-card>
     </v-flex>
   </v-layout>
+  <v-snackbar :timeout="snackbar.timeout" color="red" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} </v-snackbar>
 </v-container>
 </template>
 
@@ -36,6 +37,7 @@
 import LoginDetailsForm from './Forms/LoginDetailsForm'
 import PersonalInformationForm from './Forms/PersonalInformationForm'
 import CompanyInformationForm from './Forms/CompanyInformationForm'
+import axios from 'axios'
 
 export default {
   name: 'SignUp',
@@ -45,11 +47,21 @@ export default {
       LoginDetails: {},
       PersonalInformation: {},
       Others: {},
-      Data: {}
+      Data: {},
+      Errors: '',
+      Snackbar: false,
+      snackbar: {
+        timeout: 6000,
+        top: true,
+        multi: true,
+        vertical: true
+      }
     }
   },
   computed: {
-
+    context () {
+      this.Data['Context'] = this.$store.getters.getContext
+    }
   },
   methods: {
     getData (value) {
@@ -78,6 +90,16 @@ export default {
       }
       this.Data['Others'] = this.Others
       console.log(this.Data)
+
+      axios.post('http://localhost:3000/api/v1/userLogin/signup', {body: this.Data})
+        .then(response => {
+          console.log(response)
+        })
+        .catch(err => {
+          this.Errors = err.response.data.message
+          this.Snackbar = true
+          console.log(this.Errors)
+        })
     }
   },
   components: {
