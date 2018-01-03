@@ -1,6 +1,22 @@
 <template>
   <div>
   <v-card>
+    <form>
+      <v-container grid-list-xs text-xs-center>
+        <v-flex xs10 offset-xs1>
+          <div v-if="!withPicture">
+            <img src="http://localhost:4000/uploads/customer-512-1514938254632.png" style="width:200px;height:200px;border-radius:50%" />
+          </div>
+          <div v-else>
+            <img :src="ProfilePicture" style="width:200px;height:200px;border-radius:50%" />
+          </div>
+        </v-flex>
+        <v-flex xs10 offset-xs1>
+          <input type="file" name="ProfilePicture" id="uploaddata" @change="getPicture" ref="fileInput" hidden />
+          <v-btn color="indigo" @click="triggerFile">Upload Picture</v-btn>
+        </v-flex>
+      </v-container>
+    </form>
     <v-form>
       <v-container grid-list-xs>
         <v-flex xs10 offset-xs1>
@@ -54,7 +70,9 @@
     </v-form>
   </v-card>
   <v-btn @click="cancel"><v-icon left>navigate_before</v-icon> back</v-btn>  <v-btn color="indigo" @click="submit":disabled="$v.$invalid">next<v-icon right>navigate_next</v-icon></v-btn>
+  <v-snackbar :timeout="snackbar.timeout" color="red" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} </v-snackbar>
 </div>
+<!-- <v-snackbar :timeout="snackbar.timeout" color="red" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} </v-snackbar> -->
 </template>
 
 <script>
@@ -66,6 +84,8 @@ import {
   required,
   minLength
 } from 'vuelidate/lib/validators'
+
+import axios from 'axios'
 
 export default {
   mixins: [validationMixin],
@@ -100,6 +120,14 @@ export default {
   name: 'PersonalInformationForm',
   data () {
     return {
+      Snackbar: false,
+      snackbar: {
+        timeout: 6000,
+        top: true,
+        multi: false,
+        vertical: false
+      },
+      Errors: '',
       LastName: '',
       FirstName: '',
       MiddleName: '',
@@ -112,6 +140,9 @@ export default {
       MobileNumber: '',
       PhoneNumber: '',
       ZipCode: '',
+      withPicture: false,
+      ProfilePicture: '',
+      InputPicture: '',
       Data: {
         LastName: '',
         FirstName: '',
@@ -123,7 +154,8 @@ export default {
         Country: '',
         MobileNumber: '',
         PhoneNumber: '',
-        ZipCode: ''
+        ZipCode: '',
+        ProfilePicture: ''
       }
     }
   },
@@ -197,7 +229,6 @@ export default {
   methods: {
     HandleResize (event) {
       this.DeviceHeight = document.documentElement.clientWidth
-      console.log(this.DeviceHeight)
     },
     submit () {
       for (let key in this.Data) {
@@ -207,6 +238,35 @@ export default {
     },
     cancel () {
       this.$emit('cancel', 1)
+    },
+    triggerFile () {
+      this.$refs.fileInput.click()
+    },
+    getPicture (e) {
+      var data = e.target.files || e.dataTransfer.files
+      var filename = data[0].name
+      var split = filename.split('.')
+      var extname = split[split.length - 1]
+      var imageList = [ 'png', 'jpeg', 'jpg' ]
+      var letmesee = imageList.indexOf(extname)
+      if (letmesee < 0) {
+        document.getElementById('uploaddata').value = ''
+        this.Snackbar = true
+        this.Errors = 'You can only upload an image file'
+      }
+      else {
+        const formData = new FormData()
+        formData.set('uploaddata',data[0])
+        axios.post('http://localhost:4000/api/v1/upload', formData)
+          .then(response => {
+            this.ProfilePicture = response.data.model
+            this.withPicture = true
+          })
+          .catch(err => {
+            this.Snackbar = true
+            this.Errors = err.data.message
+          })
+      }
     }
   }
 }

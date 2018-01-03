@@ -20,8 +20,8 @@
                 <v-icon>account_circle</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-content>
-                <v-list-tile-title>{{FullName}}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ContactNumber}}</v-list-tile-sub-title>
+                <v-list-tile-title>{{User}}</v-list-tile-title>
+                <v-list-tile-sub-title>{{User}}</v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
                 <v-btn icon :class="LogIn? 'red--text':''">
@@ -80,7 +80,18 @@ export default {
       menu: false,
       FullName: 'Guest',
       ContactNumber: 'sadsadasewqewqewq213',
-      LogIn: false
+      LogIn: false,
+      user:{
+        Name: 'Guest',
+        Others: {
+          PhoneNumber : ''
+        }
+      }
+    }
+  },
+  computed: {
+    User () {
+      this.$store.getters.getUser
     }
   }
 }

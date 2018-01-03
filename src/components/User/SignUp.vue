@@ -38,6 +38,8 @@ import LoginDetailsForm from './Forms/LoginDetailsForm'
 import PersonalInformationForm from './Forms/PersonalInformationForm'
 import CompanyInformationForm from './Forms/CompanyInformationForm'
 import axios from 'axios'
+import {jwtDecode} from '../../helpers/jwtDecoder'
+import jwt from 'jsonwebtoken'
 
 export default {
   name: 'SignUp',
@@ -67,12 +69,10 @@ export default {
     getData (value) {
       this.LoginDetails = value
       this.Stepper = 2
-      console.log(this.LoginDetails)
     },
     submitPersonal (value) {
       this.PersonalInformation = value
       this.Stepper = 3
-      console.log(this.PersonalInformation)
     },
     cancel1 (value) {
       this.Stepper = value
@@ -90,17 +90,17 @@ export default {
       }
       this.Data['Context'] = this.$store.getters.getContext
       this.Data['Others'] = this.Others
-      console.log(this.Data)
 
-      axios.post('http://localhost:3000/api/v1/userLogin/signup', {body: this.Data})
+
+      axios.post('http://localhost:3000/api/v1/userLogin/signup', this.Data)
         .then(response => {
-          console.log(response)
+          var userdata = jwt.verify(response.data.model.Token, 'blaiseSecretKey')
+          this.$store.state.user = userdata.user
           this.$router.push('/')
         })
         .catch(err => {
           this.Errors = err.response.data.message
           this.Snackbar = true
-          console.log(this.Errors)
         })
     }
   },
