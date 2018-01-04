@@ -38,8 +38,6 @@ import LoginDetailsForm from './Forms/LoginDetailsForm'
 import PersonalInformationForm from './Forms/PersonalInformationForm'
 import CompanyInformationForm from './Forms/CompanyInformationForm'
 import axios from 'axios'
-import {jwtDecode} from '../../helpers/jwtDecoder'
-import jwt from 'jsonwebtoken'
 
 export default {
   name: 'SignUp',
@@ -90,12 +88,12 @@ export default {
       }
       this.Data['Context'] = this.$store.getters.getContext
       this.Data['Others'] = this.Others
-
+      this.Data['AccessLevel'] = 4
 
       axios.post('http://localhost:3000/api/v1/userLogin/signup', this.Data)
         .then(response => {
-          var userdata = jwt.verify(response.data.model.Token, 'blaiseSecretKey')
-          this.$store.state.user = userdata.user
+          localStorage.setItem('Token', response.data.model.Token)
+          this.$store.dispatch('jwtdecode', response.data.model.Token)
           this.$router.push('/')
         })
         .catch(err => {

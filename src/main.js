@@ -20,6 +20,32 @@ Vue.use(Vuetify, {
 })
 Vue.config.productionTip = false
 
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.forVisitor)) {
+
+    if (localStorage.getItem('Token')) {
+      next({
+        path: '/'
+      })
+    }
+    else {
+      next()
+    }
+  }
+  else if (to.matched.some(record => record.meta.forAdmin)) {
+    if (localStorage.getItem('forAdmin')) {
+      next()
+    }
+    else {
+      next({
+        path: '/'
+      })
+    }
+  }
+  else {
+    next()
+  }
+})
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
