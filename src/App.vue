@@ -41,18 +41,18 @@
               </v-list-tile>
             </v-list-group>
   </v-navigation-drawer>
-  <v-toolbar dark color="primary">
+  <v-toolbar  dark color="primary">
     <v-toolbar-title>Brand</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-toolbar-items v-if="!IsAdminPage" class="hidden-md-and-down">
-      <v-btn>
+    <v-toolbar-items  color="primary" v-if="!IsAdminPage" class="hidden-md-and-down">
+      <v-btn  dark color="primary">
         <v-icon left>list</v-icon> Products
-      </v-btn>
-      <v-btn>
+      </v-btn >
+      <v-btn  color="primary">
         <v-icon left>shopping_cart</v-icon> Cart
       </v-btn>
       <v-menu offset-y :offset-overflow="true" :close-on-content-click="false" :nudge-width="200" v-model="menu">
-        <v-btn slot="activator">
+        <v-btn   slot="activator"  color="primary">
           <v-icon left>account_box</v-icon> Account</v-btn>
         <v-card>
           <v-list>

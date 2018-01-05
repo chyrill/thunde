@@ -9,9 +9,9 @@ import('../node_modules/vuetify/dist/vuetify.min.css')
 
 Vue.use(Vuetify, {
   theme: {
-    primary: '#212121',
+    primary: '#0091EA',
     secondary: '#424242',
-    accent: '#82B1FF',
+    accent: '#004D40',
     error: '#FF5252',
     info: '#2196F3',
     success: '#4CAF50',
