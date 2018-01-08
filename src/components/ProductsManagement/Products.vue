@@ -23,7 +23,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn icon color="error" @click="openDeleteDialog(product._id)"><v-icon>delete</v-icon></v-btn><v-btn icon color="warning"><v-icon>edit</v-icon></v-btn><v-btn icon color="success"><v-icon>visibility</v-icon></v-btn>
+        <v-btn icon color="error" @click="openDeleteDialog(product._id)"><v-icon>delete</v-icon></v-btn><v-btn icon color="warning" @click="openEditDialog(product._id)"><v-icon>edit</v-icon></v-btn><v-btn icon color="success" @click="openViewDialog(product._id)"><v-icon>visibility</v-icon></v-btn>
       </v-card-actions>
         </v-card>
       </v-flex>
@@ -52,7 +52,7 @@
        <v-toolbar-title>Product Information</v-toolbar-title>
     </v-toolbar>
          <v-card>
-          <ProductForm @isValid="ifValidProductInfo" @dataEmit="emittedData" :clearData="clearData"/>
+          <ProductForm @isValid="ifValidProductInfo" @dataEmit="emittedData" :clearData="clearData" :id="editItemId"/>
          <v-card-actions>
            <v-spacer></v-spacer>
            <v-btn color="error" @click.stop="dialog2=false">Close</v-btn>
@@ -99,6 +99,20 @@
                      </v-card-actions>
                    </v-card>
                  </v-dialog>
+                 <v-dialog v-model="viewItemDailog" max-width="800px">
+              <v-toolbar dark color="primary">
+                 <v-toolbar-title>Product Information</v-toolbar-title>
+              </v-toolbar>
+                   <v-card>
+                     <v-card-text>
+                      <ProductView :id="viewItemId"/>
+                     </v-card-text>
+                   <v-card-actions>
+                     <v-spacer></v-spacer>
+                     <v-btn color="primary" @click="viewItemDailog=!viewItemDailog">Close</v-btn>
+                     </v-card-actions>
+                   </v-card>
+                 </v-dialog>
             <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}}<v-spacer></v-spacer><v-icon>{{snackbar.actions}}</v-icon></v-snackbar>
 </v-container>
 </template>
@@ -106,6 +120,7 @@
 <script>
 import axios from 'axios';
 import ProductForm from './Forms/ProductForm'
+import ProductView from './Forms/ProductView'
 import {
   validationMixin
 } from 'vuelidate'
@@ -126,6 +141,8 @@ export default {
   name: 'Products',
   data () {
     return {
+      viewItemDailog: false,
+      viewItemId: '',
       editItemId: '',
       deleteItemId: '',
       deleteItemDialog: false,
@@ -168,7 +185,13 @@ export default {
        then(response => {
          for (let i in response.data.items){
            response.data.items[i].Description = response.data.items[i].Description.replace(/\n/g, "<br />")
+           if (response.data.items[i].Description.length >150) {
+            response.data.items[i].Description = response.data.items[i].Description.substring(0, 147) + '...'
+           }
            response.data.items[i].Features = response.data.items[i].Features.replace(/\n/g, "<br />")
+           if (response.data.items[i].Features.length >150) {
+            response.data.items[i].Features = response.data.items[i].Features.substring(0, 147) + '...'
+           }
          }
          this.Products = response.data.items
          this.Loading = false
@@ -196,9 +219,15 @@ export default {
       }).
          then(response => {
            for (let i in response.data.items){
-             response.data.items[i].Description = response.data.items[i].Description.replace(/\n/g, "<br />")
-             response.data.items[i].Features = response.data.items[i].Features.replace(/\n/g, "<br />")
+            response.data.items[i].Description = response.data.items[i].Description.replace(/\n/g, "<br />")
+           if (response.data.items[i].Description.length >150) {
+            response.data.items[i].Description = response.data.items[i].Description.substring(0, 147) + '...'
            }
+           response.data.items[i].Features = response.data.items[i].Features.replace(/\n/g, "<br />")
+           if (response.data.items[i].Features.length >150) {
+            response.data.items[i].Features = response.data.items[i].Features.substring(0, 147) + '...'
+           }
+         }
            this.Products = response.data.items
            this.Loading = false
          })
@@ -247,7 +276,35 @@ export default {
       this.Data = value
     },
     Submit () {
-      axios({
+      console.log(this.Data)
+      if (this.Data._id != null || this.Data._id != undefined) {
+         axios({
+        method: 'put',
+        url: 'http://localhost:3001/api/v1/products/',
+        data: this.Data,
+        headers: {
+          'Authorization' : 'Bearer ' + this.$store.getters.getAuthCode
+        }
+      })
+        .then(response =>{
+          this.dialog2 = false
+          this.clearData = !this.clearData
+          this.Errors = response.data.message,
+          this.snackbar.color = 'success',
+          this.snackbar.actions = 'check',
+          this.Snackbar = true
+          this.refresh()
+        })
+        .catch(err =>{
+          this.Errors = err.response.data.message,
+          this.snackbar.color = 'error',
+          this.snackbar.actions = 'close',
+          this.Snackbar = true
+          this.refresh()
+        })
+      }
+      else {
+        axios({
         method: 'post',
         url: 'http://localhost:3001/api/v1/products/',
         data: this.Data,
@@ -277,8 +334,14 @@ export default {
              then(response => {
                for (let i in response.data.items){
                  response.data.items[i].Description = response.data.items[i].Description.replace(/\n/g, "<br />")
-                 response.data.items[i].Features = response.data.items[i].Features.replace(/\n/g, "<br />")
+           if (response.data.items[i].Description.length >150) {
+            response.data.items[i].Description = response.data.items[i].Description.substring(0, 147) + '...'
+           }
+           response.data.items[i].Features = response.data.items[i].Features.replace(/\n/g, "<br />")
+           if (response.data.items[i].Features.length >150) {
+            response.data.items[i].Features = response.data.items[i].Features.substring(0, 147) + '...'
                }
+             }
                this.Products = response.data.items
                this.Loading = false
              })
@@ -315,6 +378,7 @@ export default {
                this.Loading = false
              })
         })
+      }
     },
     openDeleteDialog (value) {
       this.deleteItemDialog = true
@@ -361,8 +425,14 @@ export default {
          then(response => {
            for (let i in response.data.items){
              response.data.items[i].Description = response.data.items[i].Description.replace(/\n/g, "<br />")
-             response.data.items[i].Features = response.data.items[i].Features.replace(/\n/g, "<br />")
+           if (response.data.items[i].Description.length >150) {
+            response.data.items[i].Description = response.data.items[i].Description.substring(0, 147) + '...'
            }
+           response.data.items[i].Features = response.data.items[i].Features.replace(/\n/g, "<br />")
+           if (response.data.items[i].Features.length >150) {
+            response.data.items[i].Features = response.data.items[i].Features.substring(0, 147) + '...'
+           }
+         }
            this.Products = response.data.items
            this.Loading = false
          })
@@ -370,6 +440,14 @@ export default {
            this.Products = err.response.data.items
            this.Loading = false
          })
+    },
+    openViewDialog (value) {
+      this.viewItemId = value
+      this.viewItemDailog = !this.viewItemDailog
+    },
+    openEditDialog (value) {
+      this.editItemId = value
+      this.dialog2 = !this.dialog2
     }
   },
   computed: {
@@ -382,7 +460,8 @@ export default {
     }
   },
   components: {
-    ProductForm
+    ProductForm,
+    ProductView
   }
 }
 </script>

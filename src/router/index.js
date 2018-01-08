@@ -4,12 +4,12 @@ import Home from '@/components/Home'
 import SignUp from '@/components/User/SignUp'
 import SignIn from '@/components/User/SignIn'
 import Products from '@/components/ProductsManagement/Products'
+import ProductListing from '@/components/public/products/Products'
 
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'Home',
       component: Home
@@ -37,6 +37,11 @@ export default new Router({
       meta: {
         forAdmin: true
       }
+    },
+    {
+      path: '/Products',
+      name: 'ProductList',
+      component: ProductListing
     }
   ],
   mode: 'history'

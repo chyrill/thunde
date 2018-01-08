@@ -124,10 +124,11 @@ export default {
       email
     }
   },
-  props: ['clearData'],
+  props: ['clearData','id'],
   name: 'ProductForm',
   data () {
     return {
+      _id: '',
       currencies: [],
       productTypes: ['Imported Goods'],
       categories: [],
@@ -299,6 +300,9 @@ export default {
     },
     clearForm () {
       return this.clearData
+    },
+    IdToEdit () {
+      return this.id
     }
   },
   watch: {
@@ -320,8 +324,34 @@ export default {
           }
           this.Data['OtherInformation'] = this.OtherInformation
           this.Data['Price'] = this.Price
+          if (this._id !== null || this._id !== undefined) {
+            this.Data['_id'] = this._id
+          }
           this.$emit('isValid',true)
           this.$emit('dataEmit',this.Data)
+      }
+    },
+    IdToEdit (value) {
+      if (value !== null || value !== undefined) {
+        axios({
+          method: 'get',
+          url: 'http://localhost:3001/api/v1/products/' + value,
+          headers: {
+            'Authorization': 'Bearer ' + this.$store.getters.getAuthCode
+          }
+        })
+          .then(response =>{
+            var modelItem = response.data.model
+            for (let prop in modelItem) {
+              this[prop] = modelItem[prop]
+            }
+            for (let prop in modelItem.OtherInformation) {
+              this[prop] = modelItem.OtherInformation[prop]
+            }
+            for (let prop in modelItem.Price) {
+              this[prop] = modelItem.Price[prop]
+            }
+          })
       }
     },
     clearForm (value) {

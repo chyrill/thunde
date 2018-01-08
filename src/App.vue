@@ -45,7 +45,7 @@
     <v-toolbar-title>Brand</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items  color="primary" v-if="!IsAdminPage" class="hidden-md-and-down">
-      <v-btn  dark color="primary">
+      <v-btn  dark color="primary" to="/Products">
         <v-icon left>list</v-icon> Products
       </v-btn >
       <v-btn  color="primary">
@@ -177,8 +177,6 @@ export default {
 
         if (value.AccessLevel !== 4) {
           this.IsAdminPage = true
-        } else {
-          this.IsAuthenticated = false
         }
       }
     }
@@ -187,6 +185,7 @@ export default {
     Logout () {
       this.$store.dispatch('logout')
       localStorage.removeItem('Token')
+      localStorage.removeItem('AuthCode')
     }
   }
 }

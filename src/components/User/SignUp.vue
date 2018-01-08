@@ -2,7 +2,7 @@
 <v-container grid-list-md>
   <v-layout row wrap>
     <v-flex xs10 offset-xs1>
-      <v-card dark color="primary">
+      <v-card color="primary">
         <v-card-text class="text-xs-center">
           <h2>Create Account</h2></v-card-text>
         <v-divider></v-divider>

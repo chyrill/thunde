@@ -6,38 +6,39 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    context: '5a43354f1a070f28107f806a',
+    context: '5a501ed2846f912834627f86',
     user: {}
   },
   mutations: {
-    setUser (state, payload) {
+    setUser(state, payload) {
       state.user = payload
       if (payload.AccessLevel !== 4) {
         localStorage.setItem('forAdmin', true)
       }
     },
-    removeUser (state) {
+    removeUser(state) {
       state.user = {}
     }
   },
   actions: {
-    jwtdecode ({commit}, payload) {
+    jwtdecode({ commit }, payload) {
       var data = jwt.verify(payload, 'blaiseSecretKey')
-      localStorage.setItem('AuthCode',data.user.AuthCode)
+      localStorage.setItem('AuthCode', data.user.AuthCode)
       commit('setUser', data.user)
     },
-    logout ({commit}) {
+    logout({ commit }) {
+      localStorage.removeItem('Token')
       commit('removeUser')
     }
   },
   getters: {
-    getContext (state) {
+    getContext(state) {
       return state.context
     },
-    getUser (state) {
+    getUser(state) {
       return state.user
     },
-    getAuthCode (state) {
+    getAuthCode(state) {
       return state.user.AuthCode
     }
   }
