@@ -92,11 +92,11 @@ export default {
   },
   watch: {
     changeId (value) {
-      axios({
+     axios({
       method: 'get',
       url: 'http://localhost:3001/api/v1/products/' + this.id,
-      headers: {
-        'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+      params: {
+        Context: localStorage.getItem('Context')
       }
     })
       .then(response => {
@@ -108,8 +108,8 @@ export default {
     axios({
       method: 'get',
       url: 'http://localhost:3001/api/v1/products/' + this.id,
-      headers: {
-        'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+      params: {
+        Context: localStorage.getItem('Context')
       }
     })
       .then(response => {

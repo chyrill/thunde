@@ -179,8 +179,8 @@ export default {
     axios({
       method: 'get',
       url: 'http://localhost:3001/api/v1/category',
-      headers: {
-        'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+      params: {
+        Context : localStorage.getItem('Context')
       }
     })
       .then(response =>{

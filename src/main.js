@@ -5,7 +5,7 @@ import Vuetify from 'vuetify'
 import App from './App'
 import { store } from './store'
 import router from './router'
-import('../node_modules/vuetify/dist/vuetify.min.css')
+import ('../node_modules/vuetify/dist/vuetify.min.css')
 
 Vue.use(Vuetify, {
   theme: {
@@ -27,22 +27,18 @@ router.beforeEach((to, from, next) => {
       next({
         path: '/'
       })
-    }
-    else {
+    } else {
       next()
     }
-  }
-  else if (to.matched.some(record => record.meta.forAdmin)) {
+  } else if (to.matched.some(record => record.meta.forAdmin)) {
     if (localStorage.getItem('forAdmin')) {
       next()
-    }
-    else {
+    } else {
       next({
         path: '/'
       })
     }
-  }
-  else {
+  } else {
     next()
   }
 })

@@ -3,7 +3,14 @@
   <v-card style="padding-top:20px; padding-bottom:20px">
     <v-layout row wrap>
       <v-flex xs10 offset-xs1>
+        <v-layout row wrap>
+          <v-flex xs6>
         <v-text-field label="Search" hint="Product Name" v-model="ProductName" append-icon="search" @keyup="search" />
+      </v-flex>
+      <v-flex xs6>
+        <v-select v-bind:items="categories" label="Category" hint="Product Category" v-model="Category" append-icon="filter_list" @input="search" />
+      </v-flex>
+      </v-layout>
       </v-flex>
     </v-layout>
     <v-container grid-list-md>
@@ -23,7 +30,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn icon color="error" @click="openDeleteDialog(product._id)"><v-icon>delete</v-icon></v-btn><v-btn icon color="warning" @click="openEditDialog(product._id)"><v-icon>edit</v-icon></v-btn><v-btn icon color="success" @click="openViewDialog(product._id)"><v-icon>visibility</v-icon></v-btn>
+        <v-btn icon color="success" @click="openAddDialog(product._id)"><v-icon>add_shopping_cart</v-icon></v-btn><v-btn icon color="warning" @click="openViewDialog(product._id)"><v-icon>visibility</v-icon></v-btn>
       </v-card-actions>
         </v-card>
       </v-flex>
@@ -39,11 +46,26 @@
               </v-toolbar>
                    <v-card>
                      <v-card-text>
-                     <!--  <ProductView :id="viewItemId"/> -->
+                      <ProductView :id="viewItemId"/>
                      </v-card-text>
                    <v-card-actions>
                      <v-spacer></v-spacer>
                      <v-btn color="primary" @click="viewItemDailog=!viewItemDailog">Close</v-btn>
+                     </v-card-actions>
+                   </v-card>
+                 </v-dialog>
+                 <v-dialog v-model="addItemDialog" max-width="400px">
+              <v-toolbar dark color="primary">
+                 <v-toolbar-title>Quantity</v-toolbar-title>
+              </v-toolbar>
+                   <v-card>
+                     <v-card-text>
+                      <v-text-field type="number" label="Quantity" v-model="Quantity"/>
+                     </v-card-text>
+                   <v-card-actions>
+                     <v-spacer></v-spacer>
+                      <v-btn color="success" @click="addToShoppingCart">Add</v-btn>
+                     <v-btn color="primary" @click="addItemDialog=!addItemDialog">Close</v-btn>
                      </v-card-actions>
                    </v-card>
                  </v-dialog>
@@ -53,10 +75,17 @@
 
 <script>
 import axios from 'axios'
+import ProductView from '../../ProductsManagement/Forms/ProductView'
 
 export default {
   data () {
     return {
+      viewItemDailog: false,
+      viewItemId: '',
+      addItemId: '',
+      Quantity: '',
+      addItemDialog: false,
+      categories: [],
       Products: [],
       ProductName: '',
       Category: '',
@@ -64,9 +93,10 @@ export default {
       snackbar: {
         timeout: 6000,
         top: true,
-        multi: true,
-        vertical: true,
-        actions: ''
+        multi: false,
+        vertical: false,
+        actions: '',
+        color: ''
       },
       Loading: false,
       Errors: '',
@@ -82,10 +112,8 @@ export default {
       params:{
         skip: this.Skip,
         limit: 20,
-        Filters: 'Name:/' + this.ProductName + '/,' + 'Category:/' + this.Category + '/'
-      },
-      headers: {
-        'Authorization' : 'Bearer '+ localStorage.getItem('AuthCode')
+        Filters: 'Name:/' + this.ProductName + '/,' + 'Category:/' + this.Category + '/',
+        Context: localStorage.getItem('Context')
       }
     }).
        then(response => {
@@ -107,6 +135,21 @@ export default {
          this.Products = err.response.data.items
          this.Loading = false
        })
+    axios({
+      method: 'get',
+      url: 'http://localhost:3001/api/v1/category/',
+      params: {
+        Context: localStorage.getItem('Context')
+      }
+    }).
+      then(response =>{
+        var categoryItem = response.data.items
+        this.categories.push('')
+        for (let item in categoryItem) {
+          this.categories.push(categoryItem[item].Name)
+        }
+
+      })
   },
   methods: {
     getProduct () {
@@ -116,10 +159,8 @@ export default {
       params:{
         skip: this.Skip,
         limit: 20,
-        Filters: 'Name:/' + this.ProductName + '/,' + 'Category:/' + this.Category + '/'
-      },
-      headers: {
-        'Authorization' : 'Bearer '+ localStorage.getItem('AuthCode')
+        Filters: 'Name:/' + this.ProductName + '/,' + 'Category:/' + this.Category + '/',
+        Context: localStorage.getItem('Context')
       }
     }).
        then(response => {
@@ -144,7 +185,38 @@ export default {
     },
     search () {
       this.getProduct()
+    },
+    openAddDialog (value) {
+      this.addItemDialog = !this.addItemDialog
+      this.addItemId = value
+    },
+    addToShoppingCart () {
+      axios({
+        method: 'get',
+        url: 'http://localhost:3001/api/v1/products/' + this.addItemId,
+        params: {
+          Context: localStorage.getItem('Context')
+        }
+      })
+        .then(response =>{
+          var itemModel = response.data.model
+          itemModel['Quantity'] = this.Quantity
+          this.Quantity = ''
+          this.$store.dispatch('addItemToCart',itemModel)
+          this.addItemDialog = !this.addItemDialog
+          this.snackbar.color = 'green'
+          this.Errors = 'Successfully added to cart'
+          this.snackbar.actions = 'check'
+          this.Snackbar = true
+        })
+    },
+    openViewDialog (value) {
+      this.viewItemDailog = true
+      this.viewItemId = value
     }
+  },
+  components: {
+    ProductView
   }
 }
 </script>

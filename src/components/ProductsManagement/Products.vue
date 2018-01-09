@@ -176,10 +176,8 @@ export default {
       params:{
         skip: this.Skip,
         limit: 20,
-        Filters: 'Name:/' + this.ProductName + '/'
-      },
-      headers: {
-        'Authorization' : 'Bearer '+ localStorage.getItem('AuthCode')
+        Filters: 'Name:/' + this.ProductName + '/',
+        Context: localStorage.getItem('Context')
       }
     }).
        then(response => {
@@ -211,10 +209,8 @@ export default {
         params:{
           skip: this.Skip,
           limit: 20,
-          Filters: 'Name:/' + this.ProductName + '/'
-        },
-        headers: {
-          'Authorization' : 'Bearer '+ this.$store.getters.getAuthCode
+          Filters: 'Name:/' + this.ProductName + '/',
+          Context: localStorage.getItem('Context')
         }
       }).
          then(response => {
@@ -325,10 +321,8 @@ export default {
             params:{
               skip: this.Skip,
               limit: 20,
-              Filters: 'Name:/' + this.ProductName + '/'
-            },
-            headers: {
-              'Authorization' : 'Bearer '+ this.$store.getters.getAuthCode
+              Filters: 'Name:/' + this.ProductName + '/',
+              Context: localStorage.getItem('Context')
             }
           }).
              then(response => {
@@ -362,10 +356,8 @@ export default {
             params:{
               skip: this.Skip,
               limit: 20,
-              Filters: 'Name:/' + this.ProductName + '/'
-            },
-            headers: {
-              'Authorization' : 'Bearer '+ localStorage.getItem('AuthCode')
+              Filters: 'Name:/' + this.ProductName + '/',
+              Context: localStorage.getItem('Context')
             }
           }).
              then(response => {
@@ -416,10 +408,8 @@ export default {
         params:{
           skip: this.Skip,
           limit: 20,
-          Filters: 'Name:/' + this.ProductName + '/'
-        },
-        headers: {
-          'Authorization' : 'Bearer '+ this.$store.getters.getAuthCode
+          Filters: 'Name:/' + this.ProductName + '/',
+          Context: localStorage.getItem('Context')
         }
       }).
          then(response => {

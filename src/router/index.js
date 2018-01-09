@@ -5,6 +5,8 @@ import SignUp from '@/components/User/SignUp'
 import SignIn from '@/components/User/SignIn'
 import Products from '@/components/ProductsManagement/Products'
 import ProductListing from '@/components/public/products/Products'
+import ShoppingCart from '@/components/public/shoppingcart/shoppingcart'
+import Quotation from '@/components/TransactionManagement/Quotation'
 
 Vue.use(Router)
 
@@ -42,6 +44,19 @@ export default new Router({
       path: '/Products',
       name: 'ProductList',
       component: ProductListing
+    },
+    {
+      path: '/ShoppingCart',
+      name: 'ShoppingCart',
+      component: ShoppingCart
+    },
+    {
+      path: '/admin/quotation',
+      name: 'Quotation',
+      component: Quotation,
+      meta: {
+        forAdmin: true
+      }
     }
   ],
   mode: 'history'

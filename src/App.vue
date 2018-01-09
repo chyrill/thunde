@@ -48,9 +48,37 @@
       <v-btn  dark color="primary" to="/Products">
         <v-icon left>list</v-icon> Products
       </v-btn >
-      <v-btn  color="primary">
-        <v-icon left>shopping_cart</v-icon> Cart
+      <v-menu offset-y :offset-overflow="true" :close-on-content-click="false" :nudge-width="250" v-model="menu2">
+      <v-btn slot="activator" color="primary">
+        <v-badge color="error" left v-if="ShoppingCart.Items.length>0"> <span slot="badge">{{ShoppingCart.Items.length}}</span>
+        <v-icon left>shopping_cart</v-icon> </v-badge>  <v-icon left v-if="ShoppingCart.Items.length<=0">shopping_cart</v-icon> Cart
       </v-btn>
+      <v-card>
+        <v-list two-line>
+          <template v-for = "item in ShoppingCart.Items">
+            <v-list-tile avatar>
+              <v-list-tile-avatar>
+                <img :src="item.Images[0]"/>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title v-html="item.Name"></v-list-tile-title>
+                <v-list-tile-sub-title v-html="item.SKU"></v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                  {{item.Quantity}} items
+                  <v-btn icon flat @click="removeShoppingCart(item._id)"><v-icon>remove</v-icon></v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+            <v-divider></v-divider>
+          </template>
+        </v-list>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+           <v-btn flat color="primary" :disabled="!IsAuthenticated" v-if="ShoppingCart.Items.length>0" @click="requestQuotation">Request a Quote</v-btn>
+          <v-btn flat color="orange" to="/ShoppingCart">Explore</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-menu>
       <v-menu offset-y :offset-overflow="true" :close-on-content-click="false" :nudge-width="200" v-model="menu">
         <v-btn   slot="activator"  color="primary">
           <v-icon left>account_box</v-icon> Account</v-btn>
@@ -139,10 +167,13 @@
 </v-app>
 </template>
 <script>
+import Uuid from 'uuid-lib'
+
 export default {
   name: 'app',
   data() {
     return {
+      menu2: false,
       sideNav: false,
       menu: false,
       IsAuthenticated: false,
@@ -156,6 +187,14 @@ export default {
             items: [
               { title: 'Products', href: '/admin/product', action: 'list' }
             ]
+          },
+          {
+            action: 'credit_card',
+            title: 'Transaction Management',
+            active: false,
+            items: [
+              { title: 'Quotation', href: '/admin/quotation', action: 'attach_money' }
+            ]
           }
         ]
     }
@@ -163,21 +202,30 @@ export default {
   computed: {
     User () {
       return this.$store.getters.getUser
+    },
+    ShoppingCart () {
+      return this.$store.getters.getShoppingCart
     }
   },
   mounted () {
     if (localStorage.getItem('Token')) {
       this.$store.dispatch('jwtdecode', localStorage.getItem('Token'))
     }
+    localStorage.setItem('Context','5a501ed2846f912834627f86')
+    this.$store.dispatch('setDefaultUser')
+    this.$store.dispatch('setShoppinCart')
   },
   watch: {
     User (value) {
-      if (value.Name !== null && value.Name !== undefined) {
+      if (value.AuthCode != null && value.AuthCode != undefined) {
         this.IsAuthenticated = true
 
-        if (value.AccessLevel !== 4) {
+        if (value.AccessLevel != 4) {
           this.IsAdminPage = true
         }
+      }
+      else {
+        this.IsAuthenticated = false
       }
     }
   },
@@ -186,6 +234,13 @@ export default {
       this.$store.dispatch('logout')
       localStorage.removeItem('Token')
       localStorage.removeItem('AuthCode')
+      this.$router.push('/')
+    },
+    removeShoppingCart (value) {
+      this.$store.dispatch('removeItemInCart',value)
+    },
+    requestQuotation () {
+      this.$store.dispatch('requestForQoutation')
     }
   }
 }
