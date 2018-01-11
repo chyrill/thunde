@@ -178,7 +178,7 @@ export default {
   mounted () {
     axios({
       method: 'get',
-      url: 'http://localhost:3001/api/v1/category',
+      url: 'http://a79c3456.ngrok.io/api/v1/category',
       params: {
         Context : localStorage.getItem('Context')
       }
@@ -224,7 +224,7 @@ export default {
       } else {
         const formData = new FormData()
         formData.set('uploaddata', data[0])
-        axios.post('http://localhost:4000/api/v1/upload', formData)
+        axios.post('http://d5b38b09.ngrok.io/api/v1/upload', formData)
           .then(response => {
             this.Images.push(response.data.model)
           })
@@ -335,9 +335,9 @@ export default {
       if (value !== null || value !== undefined) {
         axios({
           method: 'get',
-          url: 'http://localhost:3001/api/v1/products/' + value,
-          headers: {
-            'Authorization': 'Bearer ' + this.$store.getters.getAuthCode
+          url: 'http://a79c3456.ngrok.io/api/v1/products/' + value,
+          params: {
+            Context: localStorage.getItem('Context')
           }
         })
           .then(response =>{

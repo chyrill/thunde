@@ -5,7 +5,7 @@
       <v-container grid-list-xs text-xs-center>
         <v-flex xs10 offset-xs1>
           <div v-if="!withPicture">
-            <img src="http://localhost:4000/uploads/customer-512-1514938254632.png" style="width:200px;height:200px;border-radius:50%" />
+            <img src="http://d5b38b09.ngrok.io/uploads/customer-512-1514938254632.png" style="width:200px;height:200px;border-radius:50%" />
           </div>
           <div v-else>
             <img :src="ProfilePicture" style="width:200px;height:200px;border-radius:50%" />
@@ -257,7 +257,7 @@ export default {
       else {
         const formData = new FormData()
         formData.set('uploaddata',data[0])
-        axios.post('http://localhost:4000/api/v1/upload', formData)
+        axios.post('http://d5b38b09.ngrok.io/api/v1/upload', formData)
           .then(response => {
             this.ProfilePicture = response.data.model
             this.withPicture = true

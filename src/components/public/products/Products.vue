@@ -108,7 +108,7 @@ export default {
       this.Loading = true
     axios({
       method: 'get',
-      url: 'http://localhost:3001/api/v1/products/',
+      url: 'http://a79c3456.ngrok.io/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 20,
@@ -137,7 +137,7 @@ export default {
        })
     axios({
       method: 'get',
-      url: 'http://localhost:3001/api/v1/category/',
+      url: 'http://a79c3456.ngrok.io/api/v1/category/',
       params: {
         Context: localStorage.getItem('Context')
       }
@@ -155,7 +155,7 @@ export default {
     getProduct () {
      axios({
       method: 'get',
-      url: 'http://localhost:3001/api/v1/products/',
+      url: 'http://a79c3456.ngrok.io/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 20,
@@ -193,7 +193,7 @@ export default {
     addToShoppingCart () {
       axios({
         method: 'get',
-        url: 'http://localhost:3001/api/v1/products/' + this.addItemId,
+        url: 'http://a79c3456.ngrok.io/api/v1/products/' + this.addItemId,
         params: {
           Context: localStorage.getItem('Context')
         }

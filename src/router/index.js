@@ -7,6 +7,7 @@ import Products from '@/components/ProductsManagement/Products'
 import ProductListing from '@/components/public/products/Products'
 import ShoppingCart from '@/components/public/shoppingcart/shoppingcart'
 import Quotation from '@/components/TransactionManagement/Quotation'
+import PublicQuotation from '@/components/public/quotations/quotations'
 
 Vue.use(Router)
 
@@ -57,6 +58,11 @@ export default new Router({
       meta: {
         forAdmin: true
       }
+    },
+    {
+      path: '/quotations',
+      name: 'PublicQuotation',
+      component: PublicQuotation
     }
   ],
   mode: 'history'

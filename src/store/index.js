@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    context: '5a501ed2846f912834627f86',
+    context: '5a43354f1a070f28107f806a',
     user: {},
     shoppingCart: {
       UserId: '',
@@ -29,7 +29,7 @@ export const store = new Vuex.Store({
       }
       axios({
           method: 'get',
-          url: 'http://localhost:3002/api/v1/shoppingcart/' + payload.UserId
+          url: 'http://ed132795.ngrok.io/api/v1/shoppingcart/' + payload.UserId
         })
         .then(response => {
           state.shoppingCart = response.data.model
@@ -37,7 +37,7 @@ export const store = new Vuex.Store({
         .catch(err => {
           axios({
               method: 'post',
-              url: 'http://localhost:3002/api/v1/shoppingcart/',
+              url: 'http://ed132795.ngrok.io/api/v1/shoppingcart/',
               data: state.shoppingCart
             })
             .then(response => {
@@ -76,7 +76,7 @@ export const store = new Vuex.Store({
 
         axios({
             method: 'put',
-            url: 'http://localhost:3002/api/v1/shoppingcart',
+            url: 'http://ed132795.ngrok.io/api/v1/shoppingcart',
             data: state.shoppingCart
           })
           .then(response => {
@@ -106,7 +106,7 @@ export const store = new Vuex.Store({
       if (state.shoppingCart._id != null || state.shoppingCart._id != undefined) {
         axios({
             method: 'put',
-            url: 'http://localhost:3002/api/v1/shoppingcart/',
+            url: 'http://ed132795.ngrok.io/api/v1/shoppingcart/',
             data: state.shoppingCart
           })
           .then(response => {
@@ -119,7 +119,7 @@ export const store = new Vuex.Store({
     requestForQoute(state) {
       axios({
           method: 'post',
-          url: 'http://localhost:3002/api/v1/quotation',
+          url: 'http://ed132795.ngrok.io/api/v1/quotation',
           data: {
             ShoppingCartId: state.shoppingCart._id
           },
@@ -133,7 +133,7 @@ export const store = new Vuex.Store({
           state.shoppingCart.CreatedBy = state.user.Name
           axios({
               method: 'post',
-              url: 'http://localhost:3002/api/v1/shoppingcart/',
+              url: 'http://ed132795.ngrok.io/api/v1/shoppingcart/',
               data: state.shoppingCart
             })
             .then(response => {

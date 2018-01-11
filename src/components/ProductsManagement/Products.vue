@@ -1,12 +1,23 @@
 <template>
-  <v-container grid-list-md text-xs-center>
-  <v-card style="padding-top:20px; padding-bottom:20px">
-    <v-layout row wrap>
-      <v-flex xs10 offset-xs1>
-        <v-text-field label="Search" hint="Product Name" v-model="ProductName" append-icon="search" @keyup="search" />
-      </v-flex>
-    </v-layout>
-    <v-container grid-list-md>
+  <v-container>
+      <v-layout row wrap>
+          <v-flex xs12>
+              <v-card>
+                  <v-toolbar color="primary" dark class="text-xs-center">
+                      <v-toolbar-title>Category Listing</v-toolbar-title>
+                </v-toolbar>
+                  <v-card-text></v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs12></v-flex>
+          <v-flex xs12>
+              <v-card style="padding-top:20px; padding-bottom:20px">
+                <v-layout row wrap>
+                  <v-flex xs10 offset-xs1>
+                    <v-text-field label="Search" hint="Product Name" v-model="ProductName" append-icon="search" @keyup="search" />
+                  </v-flex>
+                </v-layout>
+            <v-container grid-list-md>
     <v-layout row wrap style="padding-left:10px;padding-right:10px">
       <v-flex xs3 offset-xs0 v-for="product in Products" v-if="!Loading">
         <v-card>
@@ -47,6 +58,9 @@
     </v-layout>
   </v-container>
   </v-card>
+        </v-flex>
+      </v-layout>
+  
   <v-dialog v-model="dialog2" max-width="800px">
     <v-toolbar dark color="primary">
        <v-toolbar-title>Product Information</v-toolbar-title>
@@ -114,6 +128,10 @@
                    </v-card>
                  </v-dialog>
             <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}}<v-spacer></v-spacer><v-icon>{{snackbar.actions}}</v-icon></v-snackbar>
+      <v-speed-dial v-model="fab" :bottom="bottom" :right="right" hover transition="slide-y-transition"><v-btn slot="activator" color="red" dark fab hover v-model="fab"><v-icon>add</v-icon><v-icon>close</v-icon></v-btn>
+          <v-btn fab dark small color="indigo"><v-icon>list</v-icon></v-btn>
+          <v-btn fab dark small color="green"><v-icon>filter_list</v-icon></v-btn>
+    </v-speed-dial>
 </v-container>
 </template>
 
@@ -141,6 +159,9 @@ export default {
   name: 'Products',
   data () {
     return {
+      fab: false,
+      right: true,
+      bottom: true,
       viewItemDailog: false,
       viewItemId: '',
       editItemId: '',
@@ -172,7 +193,7 @@ export default {
     this.Loading = true
     axios({
       method: 'get',
-      url: 'http://localhost:3001/api/v1/products/',
+      url: 'http://a79c3456.ngrok.io/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 20,
@@ -205,7 +226,7 @@ export default {
       this.Loading = true
       axios({
         method: 'get',
-        url: 'http://localhost:3001/api/v1/products/',
+        url: 'http://a79c3456.ngrok.io/api/v1/products/',
         params:{
           skip: this.Skip,
           limit: 20,
@@ -239,7 +260,7 @@ export default {
     SubmitCategory () {
       axios({
         method: 'post',
-        url: 'http://localhost:3001/api/v1/category',
+        url: 'http://a79c3456.ngrok.io/api/v1/category',
         data: {Name: this.CategoryName},
         headers: {
             'Authorization' : 'Bearer '+ this.$store.getters.getAuthCode
@@ -276,7 +297,7 @@ export default {
       if (this.Data._id != null || this.Data._id != undefined) {
          axios({
         method: 'put',
-        url: 'http://localhost:3001/api/v1/products/',
+        url: 'http://a79c3456.ngrok.io/api/v1/products/',
         data: this.Data,
         headers: {
           'Authorization' : 'Bearer ' + this.$store.getters.getAuthCode
@@ -302,7 +323,7 @@ export default {
       else {
         axios({
         method: 'post',
-        url: 'http://localhost:3001/api/v1/products/',
+        url: 'http://a79c3456.ngrok.io/api/v1/products/',
         data: this.Data,
         headers: {
           'Authorization' : 'Bearer ' + this.$store.getters.getAuthCode
@@ -317,7 +338,7 @@ export default {
           this.Snackbar = true
           axios({
             method: 'get',
-            url: 'http://localhost:3001/api/v1/products/',
+            url: 'http://a79c3456.ngrok.io/api/v1/products/',
             params:{
               skip: this.Skip,
               limit: 20,
@@ -352,7 +373,7 @@ export default {
           this.Snackbar = true
           axios({
             method: 'get',
-            url: 'http://localhost:3001/api/v1/products/',
+            url: 'http://a79c3456.ngrok.io/api/v1/products/',
             params:{
               skip: this.Skip,
               limit: 20,
@@ -379,7 +400,7 @@ export default {
     deleteItem () {
       axios({
         method: 'delete',
-        url: 'http://localhost:3001/api/v1/products/'+this.deleteItemId,
+        url: 'http://a79c3456.ngrok.io/api/v1/products/'+this.deleteItemId,
         headers: {
           'Authorization' : 'Bearer '+ this.$store.getters.getAuthCode
         }
@@ -404,7 +425,7 @@ export default {
     refresh () {
       axios({
         method: 'get',
-        url: 'http://localhost:3001/api/v1/products/',
+        url: 'http://a79c3456.ngrok.io/api/v1/products/',
         params:{
           skip: this.Skip,
           limit: 20,

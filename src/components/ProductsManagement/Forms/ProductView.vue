@@ -94,7 +94,7 @@ export default {
     changeId (value) {
      axios({
       method: 'get',
-      url: 'http://localhost:3001/api/v1/products/' + this.id,
+      url: 'http://a79c3456.ngrok.io/api/v1/products/' + this.id,
       params: {
         Context: localStorage.getItem('Context')
       }
@@ -107,7 +107,7 @@ export default {
   mounted () {
     axios({
       method: 'get',
-      url: 'http://localhost:3001/api/v1/products/' + this.id,
+      url: 'http://a79c3456.ngrok.io/api/v1/products/' + this.id,
       params: {
         Context: localStorage.getItem('Context')
       }

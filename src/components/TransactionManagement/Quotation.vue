@@ -64,6 +64,7 @@
                     </v-card-actions>
                    </v-card>
                  </v-dialog>
+                 <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} <v-icon>{{snackbar.action}}</v-icon></v-snackbar>
   </v-container>
 </template>
 
@@ -75,6 +76,16 @@ import axios from 'axios'
 export default {
   data () {
     return {
+      Errors: '',
+      Snackbar: false,
+      snackbar: {
+        timeout: 6000,
+        top: true,
+        multi: false,
+        vertical: false,
+        color: '',
+        action: ''
+      },
       editItemId: '',
       editViewDialog: false,
       items: [],
@@ -104,7 +115,7 @@ export default {
     getQuotation () {
       axios({
         method: 'get',
-        url: 'http://localhost:3002/api/v1/quotation/new',
+        url: 'http://ed132795.ngrok.io/api/v1/quotation/new',
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }
@@ -115,15 +126,38 @@ export default {
     },
     getTotalQuote () {
       this.quotationItem['TotalQuote'] = 0
+      this.totalQuote = 0
       for (let item in this.quotationItem.Items) {
-        var amount =parseFloat(this.quotationItem.Items[item].TotalAmount)
-        var qoute = parseFloat(this.totalQuote)
+        var amount= parseFloat(this.quotationItem.Items[item].TotalAmount)
+        var qoute= parseFloat(this.totalQuote)
         this.totalQuote = qoute + amount
         this.quotationItem.TotalQuote = this.totalQuote
       }
     },
     submit () {
-      console.log(this.quotationItem)
+      axios({
+        method: 'put',
+        url: 'http://ed132795.ngrok.io/api/v1/quotation/quote',
+        data: this.quotationItem,
+        headers: {
+          'Authorization' : 'Bearer ' + this.$store.getters.getAuthCode
+        }
+      }).
+        then(response =>{
+          this.getQuotation()
+          this.editItemId = ''
+          this.editViewDialog = !this.editViewDialog
+          this.Errors = 'Successfully submitted quotation'
+          this.snackbar.action = 'check'
+          this.snackbar.color = 'green'
+          this.Snackbar = !this.Snackbar
+        })
+        .catch(err=>{
+          this.Errors = err.response.data.message
+          this.snackbar.action = 'close'
+          this.snackbar.color = 'red'
+          this.Snackbar = !this.Snackbar
+        })
     },
     openEditDialog (value) {
       this.editItemId = value
@@ -133,7 +167,7 @@ export default {
     getQuotationById () {
       axios({
         method: 'get',
-        url: 'http://localhost:3002/api/v1/quotation/' + this.editItemId,
+        url: 'http://ed132795.ngrok.io/api/v1/quotation/' + this.editItemId,
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }
@@ -142,7 +176,7 @@ export default {
           this.quotationItem = response.data.model
           for (let item in this.quotationItem.Items) {
             this.quotationItem.Items[item]['TotalAmount'] =  parseFloat(this.quotationItem.Items[item].Price.Amount * this.quotationItem.Items[item].Quantity);
-            this.totalQuote = parseFloat(this.totalQuote+this.quotationItem.Items[item].Price.Amount * this.quotationItem.Items[item].Quantity) ;
+            this.totalQuote = parseFloat(this.totalQuote+ this.quotationItem.Items[item]['TotalAmount']);
           }
         })
     }
