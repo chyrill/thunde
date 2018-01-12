@@ -189,6 +189,14 @@ export default {
             items: [
               { title: 'Quotation', href: '/admin/quotation', action: 'attach_money' }
             ]
+          },
+          {
+              action: 'people',
+              title: 'User Management',
+              active: false,
+              items: [
+                  {title: 'User Accounts', href:'/admin/users', action: 'person'}
+              ]
           }
         ]
     }
