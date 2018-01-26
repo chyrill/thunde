@@ -11,7 +11,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-snackbar :timeout="snackbar.timeout" color="red" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} </v-snackbar>
+    <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} <v-spacer></v-spacer> <v-icon>{{snackbar.actions}}</v-icon></v-snackbar>
   </v-container>
 </template>
 
@@ -29,7 +29,9 @@ export default {
         timeout: 6000,
         top: true,
         multi: false,
-        vertical: false
+        vertical: false,
+        actions: '',
+        color: ''
       }
     }
   },
@@ -39,6 +41,9 @@ export default {
   computed: {
     User () {
       return this.$store.getters.getUser
+    },
+    ConfirmEmail () {
+       return this.$store.getters.getConfirmEmail
     }
   },
   watch: {
@@ -49,6 +54,12 @@ export default {
       else {
         this.$router.push('/')
       }
+    },
+    ConfirmEmail () {
+      this.snackbar.color = 'red'
+      this.snackbar.actions = 'close'
+      this.Errors = 'Please verify your email.'
+      this.Snackbar = !this.Snackbar
     }
   },
   methods: {
@@ -56,8 +67,8 @@ export default {
       value['Context'] = this.$store.getters.getContext
       axios.post('http://localhost:3000/api/v1/userLogin/login',value)
         .then( response => {
-          localStorage.setItem('Token', response.data.model.Token)
-          this.$store.dispatch('jwtdecode', response.data.model.Token)
+             this.$store.dispatch('signInjwtdecode', response.data.model.Token)
+         
         })
         .catch( err => {
           console.log(err.response.data)

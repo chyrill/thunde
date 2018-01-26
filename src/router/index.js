@@ -8,7 +8,7 @@ import ProductListing from '@/components/public/products/Products'
 import ShoppingCart from '@/components/public/shoppingcart/shoppingcart'
 import Quotation from '@/components/TransactionManagement/Quotation'
 import PublicQuotation from '@/components/public/quotations/quotations'
-
+import EmailConfirmation from '@/components/User/EmailConfirmation'
 Vue.use(Router)
 
 export default new Router({
@@ -63,6 +63,11 @@ export default new Router({
       path: '/quotations',
       name: 'PublicQuotation',
       component: PublicQuotation
+    },
+    {
+        path: '/confirmemail/:id',
+        name: 'EmailConfirmation',
+        component: EmailConfirmation
     }
   ],
   mode: 'history'

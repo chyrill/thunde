@@ -44,12 +44,6 @@
                         <v-btn slot="activator" flat><v-icon left>account_box</v-icon>Account</v-btn>
                         <v-card>
                             <v-list>
-                                <v-list-tile to="/transactions">
-                                    <v-list-tile-content>
-                                        <v-list-tile-title>My Transactions</v-list-tile-title>
-                                    </v-list-tile-content>
-                                    <v-list-tile-action><v-icon>credit_card</v-icon></v-list-tile-action>
-                                </v-list-tile>
                                 <v-divider></v-divider>
                                 <v-list-tile to="/signup">
                                     <v-list-tile-content>
@@ -70,8 +64,13 @@
                 </template>
                 <template v-if="IsAuthenticated">
                     <template v-if="!IsAdminPage">
+                        <v-btn flat icon disabled> 
+                            <v-avatar size="40px">
+                                <img :src="User.ProfileImage" />
+                            </v-avatar>
+                        </v-btn>
                          <v-menu offset-y :offset-overflow="true" :close-on-content-click="false" :nudge-width="250" v-model="menu">
-                            <v-btn slot="activator" flat><v-icon left>account_box</v-icon>Account</v-btn>
+                            <v-btn slot="activator" flat>{{User.Name}}</v-btn>
                             <v-card>
                                 <v-list>
                                     <v-list-tile to="/transactions">
@@ -81,18 +80,11 @@
                                         <v-list-tile-action><v-icon>credit_card</v-icon></v-list-tile-action>
                                     </v-list-tile>
                                     <v-divider></v-divider>
-                                    <v-list-tile to="/signup">
+                                    <v-list-tile @click="Logout">
                                         <v-list-tile-content>
-                                             <v-list-tile-title>Sign Up</v-list-tile-title>
+                                             <v-list-tile-title>Log Out</v-list-tile-title>
                                         </v-list-tile-content>
-                                        <v-list-tile-action><v-icon>person_add</v-icon></v-list-tile-action>
-                                    </v-list-tile>
-                                    <v-divider></v-divider>
-                                    <v-list-tile to="/signin">
-                                        <v-list-tile-content>
-                                            <v-list-tile-title>Sign In</v-list-tile-title>
-                                        </v-list-tile-content>
-                                        <v-list-tile-action><v-icon>input</v-icon></v-list-tile-action>
+                                        <v-list-tile-action><v-icon>reply</v-icon></v-list-tile-action>
                                     </v-list-tile>
                                 </v-list>
                             </v-card>
@@ -210,6 +202,7 @@ export default {
     }
   },
   mounted () {
+    var url = ''
     if (localStorage.getItem('Token')) {
       this.$store.dispatch('jwtdecode', localStorage.getItem('Token'))
     }
@@ -217,6 +210,22 @@ export default {
     this.$store.dispatch('setDefaultUser')
     this.$store.dispatch('setShoppinCart')
     this.getQuotationByUser()
+    axios.get('http://ip-api.com/json')
+      .then(response =>{
+        axios.post('http://localhost:4000/api/v1/city', { Name: response.data.city })
+            .catch(err => {
+            
+        })
+        axios.post('http://localhost:4000/api/v1/country', {Name: response.data.country })
+            .catch(err => {
+            
+            })
+        axios.post('http://localhost:4000/api/v1/state', {Name: response.data.regionName })
+            .catch(err => {
+            
+            })
+    })
+   
   },
   watch: {
     User (value) {
@@ -250,7 +259,7 @@ export default {
     getQuotationByUser () {
       axios({
         method: 'get',
-        url: 'http://ed132795.ngrok.io/api/v1/quotation/quote/' + this.$store.getters.getShoppingCart.UserId,
+        url: 'http://localhost:3002/api/v1/quotation/quote/' + this.$store.getters.getShoppingCart.UserId,
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }

@@ -4,7 +4,7 @@
     <v-flex xs10 offset-xs1>
       <v-card color="primary">
         <v-card-text class="text-xs-center">
-          <h2>Create Account</h2></v-card-text>
+          <h2 style="color:#ffffff">Create Account</h2></v-card-text>
         <v-divider></v-divider>
         <v-stepper v-model="Stepper"  vertical>
           <v-stepper-step step="1" v-bind:complete="Stepper > 1">

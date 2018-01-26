@@ -29,23 +29,26 @@
       <v-flex xs10 offset-xs1>
         <v-layout>
           <v-flex xs4>
-            <v-text-field label="City" v-model="City" :error-messages="cityErrors" @input="$v.City.$touch()" @blur="$v.City.$touch()" required />
+              <v-select v-bind:items="Cities" v-model="City" label="City" :error-messages="cityErrors" @input="$v.City.$touch()" @blur="$v.City.$touch()" required autocomplete tags></v-select>
+<!--               <v-text-field label="City" v-model="City" :error-messages="cityErrors" @input="$v.City.$touch()" @blur="$v.City.$touch()" required />-->
           </v-flex>
           <v-flex xs4>
-            <v-text-field label="State" v-model="State" :error-messages="stateErrors" @input="$v.State.$touch()" @blur="$v.State.$touch()" required />
+               <v-select v-bind:items="States" v-model="State" label="State" :error-messages="stateErrors" @input="$v.State.$touch()" @blur="$v.State.$touch()" required autocomplete tags></v-select>
+<!--            <v-text-field label="State" v-model="State" :error-messages="stateErrors" @input="$v.State.$touch()" @blur="$v.State.$touch()" required />-->
           </v-flex>
           <v-flex xs4>
-            <v-text-field label="Country" v-model="Country" :error-messages="countryErrors" @input="$v.Country.$touch()" @blur="$v.Country.$touch()" required />
+              <v-select v-bind:items="Countries" v-model="Country" label="State" :error-messages="countryErrors" @input="$v.Country.$touch()" @blur="$v.Country.$touch()" required autocomplete tags></v-select>
+<!--            <v-text-field label="Country" v-model="Country" :error-messages="countryErrors" @input="$v.Country.$touch()" @blur="$v.Country.$touch()" required />-->
           </v-flex>
         </v-layout>
       </v-flex>
       <v-flex xs10 offset-xs1>
         <v-layout>
           <v-flex xs6>
-            <v-text-field label="Company Landline" v-model="PhoneNumber" :error-messages="phoneNumberErrors" @input="$v.PhoneNumber.$touch()" @blur="$v.PhoneNumber.$touch()" required />
+            <v-text-field label="Company Landline" v-model="PhoneNumber" mask="(##)###-####" :error-messages="phoneNumberErrors" @input="$v.PhoneNumber.$touch()" @blur="$v.PhoneNumber.$touch()" required />
           </v-flex>
           <v-flex xs6>
-            <v-text-field label="Zip Code" v-model="ZipCode" :error-messages="zipCodeErrors" @input="$v.ZipCode.$touch()" @blur="$v.ZipCode.$touch()" required />
+            <v-text-field label="Zip Code" v-model="ZipCode" mask="#####" :error-messages="zipCodeErrors" @input="$v.ZipCode.$touch()" @blur="$v.ZipCode.$touch()" required />
           </v-flex>
         </v-layout>
       </v-flex>
@@ -66,6 +69,8 @@ import {
   minLength
 } from 'vuelidate/lib/validators'
 
+import axios from 'axios'    
+    
 export default {
   mixins: [validationMixin],
   validations: {
@@ -98,6 +103,9 @@ export default {
   name: 'CompanyInformationForm',
   data () {
     return {
+      Cities: [],
+      Countries: [],
+      States: [],
       DeviceWidth: document.documentElement.clientWidth,
       CompanyName: '',
       Sector: '',
@@ -126,6 +134,26 @@ export default {
   },
   ready: function () {
     window.addEventListener('resize', this.handleResize)
+  },
+  mounted () {
+    axios.get('http://localhost:4000/api/v1/city')
+      .then(response => {
+        for (let item in response.data.items){
+            this.Cities.push(response.data.items[item].Name)
+        }
+    })
+    axios.get('http://localhost:4000/api/v1/state')
+      .then(response => {
+        for (let item in response.data.items) {
+            this.States.push(response.data.items[item].Name)
+        }
+    })
+    axios.get('http://localhost:4000/api/v1/country')
+      .then(response => {
+        for (let item in response.data.items) {
+            this.Countries.push(response.data.items[item].Name)
+        }
+    })
   },
   beforeDestroy: function () {
     window.removeEventListener('resize', this.handleResize)

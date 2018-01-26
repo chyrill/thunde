@@ -15,7 +15,8 @@ export const store = new Vuex.Store({
       Items: [],
       CreatedBy: ''
     },
-    defaultUser: ''
+    defaultUser: '',
+    confirmEmail: 1
   },
   mutations: {
     setUser(state, payload) {
@@ -29,7 +30,7 @@ export const store = new Vuex.Store({
       }
       axios({
           method: 'get',
-          url: 'http://ed132795.ngrok.io/api/v1/shoppingcart/' + payload.UserId
+          url: 'http://localhost:3002/api/v1/shoppingcart/' + payload.UserId
         })
         .then(response => {
           state.shoppingCart = response.data.model
@@ -37,7 +38,7 @@ export const store = new Vuex.Store({
         .catch(err => {
           axios({
               method: 'post',
-              url: 'http://ed132795.ngrok.io/api/v1/shoppingcart/',
+              url: 'http://localhost:3002/api/v1/shoppingcart/',
               data: state.shoppingCart
             })
             .then(response => {
@@ -76,7 +77,7 @@ export const store = new Vuex.Store({
 
         axios({
             method: 'put',
-            url: 'http://ed132795.ngrok.io/api/v1/shoppingcart',
+            url: 'http://localhost:3002/api/v1/shoppingcart',
             data: state.shoppingCart
           })
           .then(response => {
@@ -106,7 +107,7 @@ export const store = new Vuex.Store({
       if (state.shoppingCart._id != null || state.shoppingCart._id != undefined) {
         axios({
             method: 'put',
-            url: 'http://ed132795.ngrok.io/api/v1/shoppingcart/',
+            url: 'http://localhost:3002/api/v1/shoppingcart/',
             data: state.shoppingCart
           })
           .then(response => {
@@ -119,7 +120,7 @@ export const store = new Vuex.Store({
     requestForQoute(state) {
       axios({
           method: 'post',
-          url: 'http://ed132795.ngrok.io/api/v1/quotation',
+          url: 'http://localhost:3002/api/v1/quotation',
           data: {
             ShoppingCartId: state.shoppingCart._id
           },
@@ -133,19 +134,37 @@ export const store = new Vuex.Store({
           state.shoppingCart.CreatedBy = state.user.Name
           axios({
               method: 'post',
-              url: 'http://ed132795.ngrok.io/api/v1/shoppingcart/',
+              url: 'http://localhost:3002/api/v1/shoppingcart/',
               data: state.shoppingCart
             })
             .then(response => {
               state.shoppingCart = response.data.model
             })
         })
+    },
+    setConfirmEmail(state) {
+        state.confirmEmail += 1
     }
   },
   actions: {
+    signInjwtdecode({ commit }, payload) {
+          var data = jwt.verify(payload, 'blaiseSecretKey')
+          if (!data.user.ConfirmEmail) {
+              commit('setConfirmEmail')
+          }
+          else {
+              localStorage.setItem('Token', payload)
+              localStorage.setItem('AuthCode', data.user.AuthCode)
+              localStorage.setItem('ConfirmEmail', data.user.ConfirmEmail)
+              localStorage.removeItem('defaultUserId')
+              this.$router.push('/')
+              commit('setUser', data.user)
+          }
+    },
     jwtdecode({ commit }, payload) {
       var data = jwt.verify(payload, 'blaiseSecretKey')
       localStorage.setItem('AuthCode', data.user.AuthCode)
+      localStorage.setItem('ConfirmEmail', data.user.ConfirmEmail)
       localStorage.removeItem('defaultUserId')
       commit('setUser', data.user)
     },
@@ -195,6 +214,9 @@ export const store = new Vuex.Store({
     },
     getShoppingCart(state) {
       return state.shoppingCart
+    },
+    getConfirmEmail(state) {
+      return state.confirmEmail
     }
   }
 })
