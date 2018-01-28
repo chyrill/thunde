@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    context: '5a43354f1a070f28107f806a',
+    context: '5a501ed2846f912834627f86',
     user: {},
     shoppingCart: {
       UserId: '',
@@ -96,7 +96,6 @@ export const store = new Vuex.Store({
         state.shoppingCart.CreatedBy = 'Guest'
       }
       state.shoppingCart.Items.push(payload)
-
     },
     SetShoppingCart(state, payload) {
       state.shoppingCart = payload
@@ -143,23 +142,24 @@ export const store = new Vuex.Store({
         })
     },
     setConfirmEmail(state) {
-        state.confirmEmail += 1
+      state.confirmEmail += 1
     }
   },
   actions: {
     signInjwtdecode({ commit }, payload) {
-          var data = jwt.verify(payload, 'blaiseSecretKey')
-          if (!data.user.ConfirmEmail) {
-              commit('setConfirmEmail')
-          }
-          else {
-              localStorage.setItem('Token', payload)
-              localStorage.setItem('AuthCode', data.user.AuthCode)
-              localStorage.setItem('ConfirmEmail', data.user.ConfirmEmail)
-              localStorage.removeItem('defaultUserId')
-              this.$router.push('/')
-              commit('setUser', data.user)
-          }
+      var data = jwt.verify(payload, 'blaiseSecretKey')
+      if (!data.user.ConfirmEmail) {
+        commit('setConfirmEmail')
+      } else {
+        var user = data.user;
+        console.log(user)
+        localStorage.setItem('Token', payload)
+        localStorage.setItem('AuthCode', user.AuthCode)
+        localStorage.setItem('ConfirmEmail', user.ConfirmEmail)
+        localStorage.removeItem('defaultUserId')
+        commit('setUser', user)
+        this.$router.push('/')
+      }
     },
     jwtdecode({ commit }, payload) {
       var data = jwt.verify(payload, 'blaiseSecretKey')

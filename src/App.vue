@@ -1,10 +1,10 @@
 <template>
     <v-app>
-        <v-toolbar absolute clipped-left app>
+        <v-toolbar absolute :color="IsAdminPage? 'primary': ''" :dark="IsAdminPage? true: false" :flat="!IsAdminPage? true: false"clipped-left app>
             <v-toolbar-title>Brand</v-toolbar-title>
             <v-spacer></v-spacer>
             <template v-if="!IsAdminPage">
-                <v-btn flat to="/quotations"><v-icon left>receipt</v-icon>Quotations</v-btn>
+                <v-btn flat to="/quotations" v-if="IsAuthenticated"><v-icon left>receipt</v-icon>Quotations</v-btn>
                 <v-btn flat to="/Products"><v-icon left>list</v-icon>Products</v-btn>
                 <v-menu offset-y :offset-overflow="true" :close-on-content-click="false" :nudge-width="250" v-model="menu2">
                   <v-btn slot="activator" flat>
@@ -12,6 +12,11 @@
                     <v-icon left>shopping_cart</v-icon> </v-badge>  <v-icon left v-if="ShoppingCart.Items.length<=0">shopping_cart</v-icon> Cart
                   </v-btn>
                     <v-card>
+                        <template v-if="ShoppingCart.Items.length <= 0">
+                          <v-card-text>
+                            <p>No items in cart</p>
+                          </v-card-text>
+                        </template>
                         <v-list two-line>
                           <template v-for = "item in ShoppingCart.Items">
                             <v-list-tile avatar>
@@ -64,7 +69,7 @@
                 </template>
                 <template v-if="IsAuthenticated">
                     <template v-if="!IsAdminPage">
-                        <v-btn flat icon disabled> 
+                        <v-btn flat icon disabled>
                             <v-avatar size="40px">
                                 <img :src="User.ProfileImage" />
                             </v-avatar>
@@ -93,12 +98,12 @@
                 </template>
             </template>
             <template v-if="IsAdminPage">
-                    <v-btn flat icon disabled> 
+                    <v-btn flat icon disabled>
                         <v-avatar size="40px">
                             <img :src="User.ProfileImage" />
                         </v-avatar>
                     </v-btn>
-                    <v-btn flat>   
+                    <v-btn flat>
                         {{User.Name}}
                     </v-btn>
                 </template>
@@ -112,7 +117,7 @@
                         </v-list-tile-avatar>
                         <v-list-tile-content>
                             <v-list-tile-title>{{User.Name}}</v-list-tile-title>
-                            <v-list-tile-sub-title><span v-html="User.AccessLevel===1?'Administrator':'Sales'"></span></v-list-tile-sub-title>
+                            <v-list-tile-sub-title><span v-html="User.AccessLevel===1?'Administrator':User.AccessLevel===2? 'Sales Manager': 'Sales Agent'"></span></v-list-tile-sub-title>
                         </v-list-tile-content>
                         <v-list-tile-action>
                             <v-btn icon @click.native.stop="mini = !mini"><v-icon>chevron_left</v-icon></v-btn>
@@ -187,7 +192,7 @@ export default {
               title: 'User Management',
               active: false,
               items: [
-                  {title: 'User Accounts', href:'/admin/users', action: 'person'}
+                  {title: 'User Accounts', href: '/admin/user', action: 'person'}
               ]
           }
         ]
@@ -206,7 +211,7 @@ export default {
     if (localStorage.getItem('Token')) {
       this.$store.dispatch('jwtdecode', localStorage.getItem('Token'))
     }
-    localStorage.setItem('Context','5a43354f1a070f28107f806a')
+    localStorage.setItem('Context','5a501ed2846f912834627f86')
     this.$store.dispatch('setDefaultUser')
     this.$store.dispatch('setShoppinCart')
     this.getQuotationByUser()
@@ -214,18 +219,18 @@ export default {
       .then(response =>{
         axios.post('http://localhost:4000/api/v1/city', { Name: response.data.city })
             .catch(err => {
-            
+
         })
         axios.post('http://localhost:4000/api/v1/country', {Name: response.data.country })
             .catch(err => {
-            
+
             })
         axios.post('http://localhost:4000/api/v1/state', {Name: response.data.regionName })
             .catch(err => {
-            
+
             })
     })
-   
+
   },
   watch: {
     User (value) {

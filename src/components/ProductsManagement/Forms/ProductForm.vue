@@ -1,18 +1,22 @@
 <template>
-<v-container grid-list-md>
-  <v-form>
-    <v-layout row wrap>
-      <v-flex xs3 v-for="(pics, index ) in Images">
-        <img :src="pics" style="width:100px;height:100px" />
-        <v-btn icon @click="deleteImage(index)"><v-icon>close</v-icon></v-btn>
-      </v-flex>
-      <input type="file" id="picUpload" name="picture" hidden @change="uploadImage" />
-      <v-flex xs10 offset-xs1>
-        <v-btn dark color="accent" @click="tickUpload">Upload Image
-          <v-icon right>add_a_photo</v-icon>
-        </v-btn>
-      </v-flex>
-    </v-layout>
+<v-card>
+  <v-toolbar color="primary" dark>
+    <v-toolbar-title>Product Information</v-toolbar-title>
+  </v-toolbar>
+  <v-container grid-list-md>
+    <v-form>
+      <v-layout row wrap>
+        <v-flex xs3 v-for="(pics, index ) in Images">
+          <img :src="pics" style="width:100px;height:100px" />
+          <v-btn icon @click="deleteImage(index)"><v-icon>close</v-icon></v-btn>
+        </v-flex>
+        <input type="file" id="picUpload" name="picture" hidden @change="uploadImage" />
+        <v-flex xs10 offset-xs1>
+          <v-btn dark color="accent" @click="tickUpload">Upload Image
+            <v-icon right>add_a_photo</v-icon>
+          </v-btn>
+        </v-flex>
+      </v-layout>
     <v-layout row wrap>
       <v-flex xs10 offset-xs1>
         <v-text-field label="Product Name" required v-model="Name" :error-messages="nameErrors" @blur="$v.Name.$touch()" @input="$v.Name.$touch()" />
@@ -23,18 +27,28 @@
       <v-flex xs10 offset-xs1>
         <v-text-field multi-line label="Description" required v-model="Description" :error-messages="descriptionErrors" @blur="$v.Description.$touch()" @input="$v.Description.$touch()" />
       </v-flex>
-      <v-flex xs10 offset-xs1>
-        <v-text-field multi-line label="Features" v-model="Features" />
-      </v-flex>
-      <v-flex xs10 offset-xs1>
+        <v-flex xs10 offset-xs1>
         <v-layout row wrap>
           <v-flex xs6>
-            <v-select label="Category" v-bind:items="categories" required :error-messages="categoryErrors" @blur="$v.Category.$touch()" @input="$v.Category.$touch()" v-model="Category"> </v-select>
+            <v-select label="Category" v-bind:items="categories" item-text="Name" item-value="Name" required :error-messages="categoryErrors" @blur="$v.Category.$touch()" @input="$v.Category.$touch()" v-model="Category"> </v-select>
           </v-flex>
           <v-flex xs6>
             <v-select label="Product Type" v-bind:items="productTypes" v-model="ProductType" required :error-messages="productTypesErrors" @blur="$v.ProductType.$touch()" @input="$v.ProductType.$touch()"> </v-select>
           </v-flex>
         </v-layout>
+      </v-flex>
+      <v-flex xs12>
+        <v-divider></v-divider>
+        <h2>Specification</h2>
+      </v-flex>
+      <template v-for="value in SpecificationItem">
+        <v-flex xs4 offset-xs1>
+          <v-text-field :label="value" v-model="Specification[value]"  required/>
+        </v-flex>
+      </template>
+       <v-flex xs12>
+        <v-divider></v-divider>
+        <h2>Product Price</h2>
       </v-flex>
       <v-flex xs10 offset-xs1>
         <v-layout row wrap>
@@ -42,7 +56,7 @@
             <v-select label="Currency" v-bind:items="currencies" v-model="Currency"> </v-select>
           </v-flex>
           <v-flex xs8>
-            <v-text-field label="Amount" v-model="Amount" required :error-messages="amountErrors" @blur="$v.Amount.$touch()" @input="$v.Amount.$touch()"/>
+            <v-text-field label="Amount" type="number" v-model="Amount" required :error-messages="amountErrors" @blur="$v.Amount.$touch()" @input="$v.Amount.$touch()"/>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -62,18 +76,24 @@
       <v-flex xs10 offset-xs1>
         <v-layout row wrap>
           <v-flex xs6>
-            <v-text-field label="Contact Number" v-model="SupplierContactNumber" />
+            <v-text-field label="Contact Number" mask="(##)###-#####" v-model="SupplierContactNumber" />
           </v-flex>
           <v-flex xs6>
             <v-text-field label="Email Address" required v-model="SupplierEmail" :error-messages="supplierEmailErrors" @input="$v.SupplierEmail.$touch()" @blur="$v.SupplierEmail.$touch()" />
           </v-flex>
         </v-layout>
       </v-flex>
-    </v-layout>
-    </v-layout>
-  </v-form>
-  <v-snackbar :timeout="snackbar.timeout" color="red" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} </v-snackbar>
-</v-container>
+      </v-layout>
+      </v-layout>
+    </v-form>
+    <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} <v-spacer></v-spacer><v-icon>{{snackbar.actions}}</v-icon></v-snackbar>
+  </v-container>
+  <v-card-actions>
+    <v-spacer></v-spacer>
+    <v-btn flat color="primary" @click="submit" :disabled="$v.$invalid">Submit</v-btn>
+    <v-btn flat color="red" @click.stop="closeform">Close</v-btn>
+  </v-card-actions>
+</v-card>
 </template>
 
 
@@ -124,10 +144,11 @@ export default {
       email
     }
   },
-  props: ['clearData','id'],
+  props: ['id','refresh'],
   name: 'ProductForm',
   data () {
     return {
+      clearData: false,
       _id: '',
       currencies: [],
       productTypes: ['Imported Goods'],
@@ -148,8 +169,10 @@ export default {
       snackbar :{
         timeout: 6000,
         top: true,
-        multi: true,
-        vertical: true
+        multi: false,
+        vertical: true,
+        color: '',
+        actions: ''
       },
       Errors: '',
       Images: [],
@@ -158,10 +181,12 @@ export default {
         Name: '',
         Images: '',
         Description: '',
-        Features: '',
+        Specification: {},
         Category: '',
         ProductType: '',
-        SKU: ''
+        SKU: '',
+        Price: {},
+        OtherInformation: {}
       },
       OtherInformation: {
         SupplierName: '',
@@ -172,22 +197,23 @@ export default {
       Price: {
         Currency: '',
         Amount: ''
-      }
+      },
+      Specification: {
+
+      },
+      SpecificationItem: []
     }
   },
   mounted () {
     axios({
       method: 'get',
-      url: 'http://a79c3456.ngrok.io/api/v1/category',
+      url: 'http://localhost:3001/api/v1/category',
       params: {
         Context : localStorage.getItem('Context')
       }
     })
       .then(response =>{
-        var categoryItem = response.data.items
-        for (let i in categoryItem) {
-          this.categories.push(categoryItem[i].Name)
-        }
+        this.categories = response.data.items
       })
     axios({
       method: 'get',
@@ -224,7 +250,7 @@ export default {
       } else {
         const formData = new FormData()
         formData.set('uploaddata', data[0])
-        axios.post('http://d5b38b09.ngrok.io/api/v1/upload', formData)
+        axios.post('http://localhost:4000/api/v1/upload', formData)
           .then(response => {
             this.Images.push(response.data.model)
           })
@@ -235,6 +261,106 @@ export default {
     },
     deleteImage (index) {
       this.Images.splice(index,1)
+    },
+    refreshAll () {
+      axios({
+        method: 'get',
+        url: 'http://localhost:3001/api/v1/category',
+        params: {
+          Context: localStorage.getItem('Context')
+        },
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
+        }
+      })
+        .then(response => {
+          this.categories = response.data.items
+        })
+        .catch(err => {
+
+        })
+    },
+    submit () {
+
+      if (this.Images.length <= 0) {
+        this.Errors = 'Must have atleast 1 image'
+        this.snackbar.color = 'red'
+        this.snackbar.actions = 'close'
+        this.Snackbar = !this.Snackbar
+      }
+      else {
+        for (let item in this.Price) {
+        this.Price[item] = this[item]
+        }
+
+        for (let item in this.OtherInformation) {
+        this.OtherInformation[item] = this[item]
+        }
+
+        for (let item in this.Data){
+          this.Data[item] = this[item]
+        }
+        if ( this._id === null || this._id === undefined) {
+          axios({
+            method: 'post',
+            url: 'http://localhost:3001/api/v1/products',
+            data: this.Data,
+            headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
+            }
+          })
+            .then(response => {
+              this.Errors = response.data.message
+              this.snackbar.color = 'success'
+              this.snackbar.actions = 'check'
+              this.Snackbar = !this.Snackbar
+              this.clearData = !this.clearData
+              this.$emit('close')
+            })
+            .catch(err => {
+              this.Errors = err.response.data.message
+              this.snackbar.color = 'red'
+              this.snackbar.actions = 'close'
+              this.Snackbar = !this.Snackbar
+            })
+        }
+        else {
+
+          this.Data['_id'] = this._id
+          console.log(this.Data)
+          axios({
+            method: 'put',
+            url: 'http://localhost:3001/api/v1/products',
+            data: this.Data,
+            headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
+            }
+          })
+            .then(response => {
+              this.Errors = response.data.message
+              this.snackbar.color = 'success'
+              this.snackbar.actions = 'check'
+              this.Snackbar = !this.Snackbar
+              this.clearData = !this.clearData
+              this.$emit('close')
+            })
+            .catch(err => {
+              this.Errors = err.response.data.message
+              this.snackbar.color = 'red'
+              this.snackbar.actions = 'close'
+              this.Snackbar = !this.Snackbar
+            })
+        }
+
+      }
+    },
+    closeform () {
+      this.$emit('close')
+    },
+    clearAllForm () {
+      for (let item in this) {
+        this[item] = ''
+      }
     }
   },
   computed: {
@@ -332,10 +458,12 @@ export default {
       }
     },
     IdToEdit (value) {
+      this.SpecificationItem = []
+      this.Specification = {}
       if (value !== null || value !== undefined) {
         axios({
           method: 'get',
-          url: 'http://a79c3456.ngrok.io/api/v1/products/' + value,
+          url: 'http://localhost:3001/api/v1/products/' + value,
           params: {
             Context: localStorage.getItem('Context')
           }
@@ -350,6 +478,16 @@ export default {
             }
             for (let prop in modelItem.Price) {
               this[prop] = modelItem.Price[prop]
+            }
+            for (let prop in response.data.model.Specification) {
+              var propName = prop
+              this.SpecificationItem.push(propName)
+              var data = modelItem.Specification[prop]
+              this.Specification[propName] = data
+              console.log(this.SpecificationItem)
+            }
+            for (let prop in this.Specification) {
+              this.Specification[prop] = modelItem.Specification[prop]
             }
           })
       }
@@ -369,6 +507,33 @@ export default {
       this.Amount= ''
       this.Currency= ''
       this.Images= []
+    },
+    refresh (value) {
+      this.refreshAll()
+    },
+    Category (value) {
+      this.Specification = {}
+      this.SpecificationItem = []
+      axios({
+        method: 'get',
+        url: 'http://localhost:3001/api/v1/specification/' + value,
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
+        }
+      })
+        .then(response => {
+          var specification = response.data.model
+
+          for (let item in specification.SpecificationItem){
+            this.Specification[specification.SpecificationItem[item]] = ''
+
+          }
+          this.SpecificationItem = response.data.model.SpecificationItem
+          console.log(this.Specification)
+        })
+        .catch(err => {
+
+        })
     }
   }
 }

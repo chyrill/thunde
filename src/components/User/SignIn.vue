@@ -11,7 +11,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} <v-spacer></v-spacer> <v-icon>{{snackbar.actions}}</v-icon></v-snackbar>
+    <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} <v-spacer></v-spacer> <v-icon dark>{{snackbar.actions}}</v-icon></v-snackbar>
   </v-container>
 </template>
 
@@ -68,10 +68,9 @@ export default {
       axios.post('http://localhost:3000/api/v1/userLogin/login',value)
         .then( response => {
              this.$store.dispatch('signInjwtdecode', response.data.model.Token)
-         
+
         })
         .catch( err => {
-          console.log(err.response.data)
           this.Errors = err.response.data.message
           this.Snackbar = true
         })

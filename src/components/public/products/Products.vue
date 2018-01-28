@@ -8,13 +8,20 @@
         <v-text-field label="Search" hint="Product Name" v-model="ProductName" append-icon="search" @keyup="search" />
       </v-flex>
       <v-flex xs6>
-        <v-select v-bind:items="categories" label="Category" hint="Product Category" v-model="Category" append-icon="filter_list" @input="search" />
+        <v-select v-bind:items="categories" item-value="Name" item-text="Name" label="Category" hint="Product Category" v-model="Category" append-icon="filter_list" @input="search" />
+      </v-flex>
+      <v-flex xs6>
+        <v-select v-bind:items="specification" v-model="SpecificationFilter" label="Specification" @input="searchWithSpecification"></v-select>
+      </v-flex>
+      <v-flex xs6>
+         <v-select label="Specification Value" v-bind:items="specificationvalues" v-model="SpecificationValueFilter" @input="searchMoreFilter"></v-select>
       </v-flex>
       </v-layout>
       </v-flex>
     </v-layout>
     <v-container grid-list-md>
     <v-layout row wrap style="padding-left:10px;padding-right:10px">
+      <template v-if="Products.length > 0">
       <v-flex xs3 offset-xs0 v-for="product in Products" v-if="!Loading">
         <v-card>
           <v-card-media :src="product.Images[0]" height="200px">
@@ -22,18 +29,18 @@
           <v-card-title>
             <h2>{{product.Name}}</h2>
             </v-card-title>
-            <v-card-text style="text-align:justify">
-
-            <div><b>Description:</b><p v-html="product.Description"></p></div>
-              <div><b>Features:</b> <p v-html="product.Features"></p></div>
-
-      </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn icon color="success" @click="openAddDialog(product._id)"><v-icon>add_shopping_cart</v-icon></v-btn><v-btn icon color="warning" @click="openViewDialog(product._id)"><v-icon>visibility</v-icon></v-btn>
       </v-card-actions>
         </v-card>
       </v-flex>
+    </template>
+    <template v-if="Products.length <= 0">
+      <v-card-text>
+        <h3><i>No items to display</i></h3>
+      </v-card-text>
+    </template>
       <v-flex xs10 offset-xs1>
       <v-progress-circular indeterminate v-bind:size="70" v-bind:width="7" color="purple" v-if="Loading"></v-progress-circular>
     </v-flex>
@@ -80,6 +87,10 @@ import ProductView from '../../ProductsManagement/Forms/ProductView'
 export default {
   data () {
     return {
+      SpecificationValueFilter: '',
+      specificationvalues: [],
+      SpecificationFilter: '',
+      specification: [],
       viewItemDailog: false,
       viewItemId: '',
       addItemId: '',
@@ -108,7 +119,7 @@ export default {
       this.Loading = true
     axios({
       method: 'get',
-      url: 'http://a79c3456.ngrok.io/api/v1/products/',
+      url: 'http://localhost:3001/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 20,
@@ -117,17 +128,43 @@ export default {
       }
     }).
        then(response => {
-         for (let i in response.data.items){
-           response.data.items[i].Description = response.data.items[i].Description.replace(/\n/g, "<br />")
-           if (response.data.items[i].Description.length >150) {
-            response.data.items[i].Description = response.data.items[i].Description.substring(0, 147) + '...'
-           }
-           response.data.items[i].Features = response.data.items[i].Features.replace(/\n/g, "<br />")
-           if (response.data.items[i].Features.length >150) {
-            response.data.items[i].Features = response.data.items[i].Features.substring(0, 147) + '...'
-           }
-         }
          this.Products = response.data.items
+         for (let item in response.data.items) {
+            for (let specItem in response.data.items[item].Specification) {
+              if (this.specification.indexOf(specItem) < 0) {
+                this.specification.push(specItem)
+              }
+            }
+         }
+         this.Loading = false
+       })
+       .catch(err => {
+         this.Products = err.response.data.items
+         this.Loading = false
+       })
+      this.refreshAll()
+  },
+  methods: {
+    searchMoreFilter () {
+      axios({
+      method: 'get',
+      url: 'http://localhost:3001/api/v1/products/',
+      params:{
+        skip: this.Skip,
+        limit: 20,
+        Filters: 'Name:/' + this.ProductName + '/,' + 'Category:/' + this.Category + '/,Specification.' + this.SpecificationFilter + ':/' + this.SpecificationValueFilter + '/',
+        Context: localStorage.getItem('Context')
+      }
+    }).
+       then(response => {
+         this.Products = response.data.items
+         for (let item in response.data.items) {
+            for (let specItem in response.data.items[item].Specification) {
+              if (this.specification.indexOf(specItem) < 0) {
+                this.specification.push(specItem)
+              }
+            }
+         }
          this.Loading = false
        })
        .catch(err => {
@@ -135,27 +172,23 @@ export default {
          this.Products = err.response.data.items
          this.Loading = false
        })
-    axios({
-      method: 'get',
-      url: 'http://a79c3456.ngrok.io/api/v1/category/',
-      params: {
-        Context: localStorage.getItem('Context')
-      }
-    }).
-      then(response =>{
-        var categoryItem = response.data.items
-        this.categories.push('')
-        for (let item in categoryItem) {
-          this.categories.push(categoryItem[item].Name)
-        }
 
-      })
-  },
-  methods: {
+    },
+    searchWithSpecification () {
+      this.specificationvalues = []
+      for (let item in this.Products) {
+        var data = this.Products[item].Specification[this.SpecificationFilter]
+        if (this.specificationvalues.indexOf(data) < 0) {
+          this.specificationvalues.push(this.Products[item].Specification[this.SpecificationFilter])
+        }
+      }
+    },
     getProduct () {
+     this.specificationvalues = []
+     this.specification = []
      axios({
       method: 'get',
-      url: 'http://a79c3456.ngrok.io/api/v1/products/',
+      url: 'http://localhost:3001/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 20,
@@ -164,17 +197,14 @@ export default {
       }
     }).
        then(response => {
-         for (let i in response.data.items){
-           response.data.items[i].Description = response.data.items[i].Description.replace(/\n/g, "<br />")
-           if (response.data.items[i].Description.length >150) {
-            response.data.items[i].Description = response.data.items[i].Description.substring(0, 147) + '...'
-           }
-           response.data.items[i].Features = response.data.items[i].Features.replace(/\n/g, "<br />")
-           if (response.data.items[i].Features.length >150) {
-            response.data.items[i].Features = response.data.items[i].Features.substring(0, 147) + '...'
-           }
-         }
          this.Products = response.data.items
+         for (let item in response.data.items) {
+            for (let specItem in response.data.items[item].Specification) {
+              if (this.specification.indexOf(specItem) < 0) {
+                this.specification.push(specItem)
+              }
+            }
+         }
          this.Loading = false
        })
        .catch(err => {
@@ -193,7 +223,7 @@ export default {
     addToShoppingCart () {
       axios({
         method: 'get',
-        url: 'http://a79c3456.ngrok.io/api/v1/products/' + this.addItemId,
+        url: 'http://localhost:3001/api/v1/products/' + this.addItemId,
         params: {
           Context: localStorage.getItem('Context')
         }
@@ -213,6 +243,25 @@ export default {
     openViewDialog (value) {
       this.viewItemDailog = true
       this.viewItemId = value
+    },
+    refreshAll () {
+      axios({
+        method: 'get',
+        url: 'http://localhost:3001/api/v1/category',
+        params: {
+          Context: localStorage.getItem('Context')
+        },
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
+        }
+      })
+        .then(response => {
+          this.categories = response.data.items
+          console.log(this.categories)
+        })
+        .catch(err => {
+
+        })
     }
   },
   components: {

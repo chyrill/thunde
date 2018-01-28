@@ -9,6 +9,8 @@ import ShoppingCart from '@/components/public/shoppingcart/shoppingcart'
 import Quotation from '@/components/TransactionManagement/Quotation'
 import PublicQuotation from '@/components/public/quotations/quotations'
 import EmailConfirmation from '@/components/User/EmailConfirmation'
+import UserAccounts from '@/components/User/accounts/useraccount'
+
 Vue.use(Router)
 
 export default new Router({
@@ -65,9 +67,17 @@ export default new Router({
       component: PublicQuotation
     },
     {
-        path: '/confirmemail/:id',
-        name: 'EmailConfirmation',
-        component: EmailConfirmation
+      path: '/confirmemail/:id',
+      name: 'EmailConfirmation',
+      component: EmailConfirmation
+    },
+    {
+      path: '/admin/user',
+      name: 'UserAccounts',
+      component: UserAccounts,
+      meta: {
+        forAdmin: true
+      }
     }
   ],
   mode: 'history'

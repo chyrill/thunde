@@ -29,7 +29,7 @@
       </v-card>
     </v-flex>
   </v-layout>
-  <v-snackbar :timeout="snackbar.timeout" color="red" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} </v-snackbar>
+  <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} <v-spacer></v-spacer> <v-icon dark>{{snackbar.actions}}</v-icon> </v-snackbar>
 </v-container>
 </template>
 
@@ -54,7 +54,9 @@ export default {
         timeout: 6000,
         top: true,
         multi: true,
-        vertical: true
+        vertical: true,
+        actions: '',
+        color: ''
       }
     }
   },
@@ -92,12 +94,17 @@ export default {
 
       axios.post('http://localhost:3000/api/v1/userLogin/signup', this.Data)
         .then(response => {
-          localStorage.setItem('Token', response.data.model.Token)
-          this.$store.dispatch('jwtdecode', response.data.model.Token)
-          this.$router.push('/')
+          this.Errors = 'Please verify your email'
+          this.snackbar.color = 'gray'
+          this.snackbar.actions = 'check'
+          this.Snackbar = true
+          setTimeout(this.$router.push('/'),20000)
+
         })
         .catch(err => {
           this.Errors = err.response.data.message
+          this.snackbar.color = 'red'
+          this.snackbar.actions = 'close'
           this.Snackbar = true
         })
     }
