@@ -129,7 +129,15 @@
             <v-list-group v-for="item in items" :value="item.active" v-bind:key="item.title">
               <v-list-tile slot="item" @click="item.active = !item.active">
                 <v-list-tile-action>
-                  <v-icon>{{ item.action }}</v-icon>
+                    <template v-if="item.notify">
+                        <v-badge color="red">
+                            <span slot="badge">!</span>
+                            <v-icon>{{ item.action }}</v-icon>
+                        </v-badge>
+                    </template>
+                    <template v-if="!item.notify">
+                            <v-icon>{{ item.action }}</v-icon>
+                    </template>
                 </v-list-tile-action>
                 <v-list-tile-content>
                   <v-list-tile-title>{{ item.title }}</v-list-tile-title>
@@ -149,6 +157,7 @@
             </v-list-group>
         </v-navigation-drawer>
         <v-content>
+             <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" top v-model="Snackbar">{{Message}} <v-icon color="red">{{snackbar.actions}}</v-icon></v-snackbar>
             <main>
                 <router-view/>
             </main>
@@ -195,7 +204,14 @@ export default {
                   {title: 'User Accounts', href: '/admin/user', action: 'person'}
               ]
           }
-        ]
+        ],
+      snackbar: {
+          timeout: 6000,
+          color: '',
+          actions: ''
+      },
+      Snackbar: false,
+      Message: ''
     }
   },
   computed: {
@@ -211,7 +227,7 @@ export default {
     if (localStorage.getItem('Token')) {
       this.$store.dispatch('jwtdecode', localStorage.getItem('Token'))
     }
-    localStorage.setItem('Context','5a501ed2846f912834627f86')
+    localStorage.setItem('Context','5a43354f1a070f28107f806a')
     this.$store.dispatch('setDefaultUser')
     this.$store.dispatch('setShoppinCart')
     this.getQuotationByUser()
@@ -230,7 +246,7 @@ export default {
 
             })
     })
-
+    this.startCycle()
   },
   watch: {
     User (value) {
@@ -272,6 +288,50 @@ export default {
         .then(response=>{
           this.quotations = response.data.items
         })
+    },
+    startCycle () {
+        setInterval(function() {
+            this.refreshAllData()
+        }.bind(this),30000)
+    },
+    refreshAllData () {
+        var admin = localStorage.getItem('forAdmin')
+        if (admin) {
+            console.log('hehhehehe')
+            axios({
+                method: 'get',
+                url: 'http://localhost:3002/api/v1/quotation/new',
+                headers: {
+                'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+                }
+            })
+            .then(response => {
+                 if (response.data.totalcount > 0) {
+                     this.snackbar.color = 'gray'
+                     this.snackbar.actions = 'priority_high'
+                     this.Message = 'There is ' + response.data.items.length + ' new quotation request' 
+                     this.Snackbar = !this.Snackbar
+                 }
+            })
+        }
+        else {
+            axios({
+                method: 'get',
+                url: 'http://localhost:3002/api/v1/quotation/quote/' + localStorage.getItem('UserId'),
+                headers: {
+                    'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+                }
+            })
+            .then(response => {
+                if (response.data.totalcount > 0) {
+                    this.snackbar.color = 'gray'
+                    this.snackbar.actions = 'priority_high'
+                    this.Message = 'There is ' + response.data.totalcount + ' new quoted request' 
+                    this.Snackbar = !this.Snackbar
+                }
+            })
+        }
+        
     }
   }
 }

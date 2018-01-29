@@ -24,37 +24,74 @@
 </v-toolbar>
     <v-card>
       <v-card-text>
-        <table border="1">
-          <tr>
-            <td colspan="1"><b>Customer Name:</b></td> <td colspan="2">{{quotationItem.CreatedBy}}</td>
-            <td colspan="1"><b>Quoted By:</b></td><td colspan="2">{{quotationItem.UpdatedBy}}</td>
-          </tr>
-          <tr>
-            <td colspan="3"><b>Date Quoted:</b></td><td colspan="3">{{quotationItem.DateUpdated}}</td>
-          </tr>
-          <tr>
-            <th>Quantity</th>
-            <th>Product Name</th>
-            <th>Product Image</th>
-            <th>Description</th>
-            <th>Features</th>
-            <th>Price</th>
-          </tr>
-          <tr v-for="item in quotationItem.Items">
-            <td>{{item.Quantity}}</td>
-            <td>{{item.Name}}</td>
-            <td>{{item.Images[0]}}</td>
-            <td>{{item.Description}}</td>
-            <td>{{item.Features}}</td>
-            <td>{{item.TotalAmount}}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-              <td colspan="2"><b>Total Quote:</b></td><td colspan="1">{{quotationItem.TotalQuote}}</td>
-          </tr>
-        </table>
+          <v-layout row wrap>
+              <v-flex xs2>
+                  <h3>Customer Name:</h3>
+              </v-flex>
+              <v-flex xs4>
+                  <p>{{quotationItem.CreatedBy}}</p>
+              </v-flex>
+              <v-flex xs2>
+                  <h3>Company Name:</h3>
+              </v-flex>
+              <v-flex xs4>
+                  <p>{{otherInformation.CompanyName}}</p>
+              </v-flex>
+              <v-flex xs2>
+                  <h3>Quoted By:</h3>
+              </v-flex>
+              <v-flex xs4>
+                  <p>{{quotationItem.UpdatedBy}}</p>
+              </v-flex>
+              <v-flex xs2>
+                  <h3>Expiration Date:</h3>
+              </v-flex>
+              <v-flex xs4>
+                  <p>{{quotationItem.ExpirationDate}}</p>
+              </v-flex>
+              <v-flex xs10 offset-xs1>
+                  <v-layout row wrap>
+                      <v-flex xs3>
+                          <h4>Product Name</h4>
+                      </v-flex>
+                      <v-flex xs3>
+                          <h4>Quantity</h4>
+                      </v-flex>
+                      <v-flex xs3>
+                          <h4>Unit Price</h4>
+                      </v-flex>
+                      <v-flex xs3>
+                          <h4>Price (PHP)</h4>
+                      </v-flex>
+                  </v-layout>
+              </v-flex>
+              <v-flex xs10 offset-xs1>
+                <v-layout row wrap>
+                    <template v-for="item in quotationItem.Items">
+                        <v-flex xs3>
+                            <i>{{item.Name}}</i>
+                        </v-flex>
+                        <v-flex xs3>
+                            <i>{{item.Quantity}}</i>
+                        </v-flex>
+                        <v-flex xs3>
+                            <i>{{item.UnitPrice}} {{item.Price.Currency}}</i>
+                        </v-flex>
+                        <v-flex xs3>
+                            <i>{{item.TotalAmount}}</i>
+                        </v-flex>
+                    </template>
+                </v-layout>
+              </v-flex>
+<!--
+              <v-flex xs3 offset-xs6>
+                  <h3>Total Amount:</h3>
+              </v-flex>
+              <v-flex xs3>
+                  {{quotationItem.TotalQuote}}
+              </v-flex>
+-->
+          </v-layout>
       </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
@@ -97,8 +134,14 @@ export default{
           sortable: false
         }
       ],
-      items: []
+      items: [],
+      otherInformation: {}
     }
+  },
+  computed: {
+    User () {
+        return this.$store.getters.getUser
+    }  
   },
   mounted () {
     this.getQuotation()
@@ -107,7 +150,7 @@ export default{
     getQuotation () {
       axios({
         method: 'get',
-        url: 'http://ed132795.ngrok.io/api/v1/quotation/quote/' + this.$store.getters.getShoppingCart.UserId,
+        url: 'http://localhost:3002/api/v1/quotation/quote/' + localStorage.getItem('UserId'),
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }
@@ -119,13 +162,18 @@ export default{
     getQuotationDetail () {
       axios({
         method: 'get',
-        url: 'http://ed132795.ngrok.io/api/v1/quotation/' + this.quotationId,
+        url: 'http://localhost:3002/api/v1/quotation/' + this.quotationId,
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }
       })
         .then(response=>{
           this.quotationItem = response.data.model
+          var expiryDate = new Date(this.quotationItem.DateUpdated)
+          expiryDate = expiryDate.setDate(expiryDate.getDate() + 10)
+          this.quotationItem['ExpirationDate'] = new Date(expiryDate)
+          this.otherInformation = response.data.model.Customer.Others
+          console.log(this.quotationItem)
         })
     },
     viewQuotation (value) {

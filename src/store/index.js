@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    context: '5a501ed2846f912834627f86',
+    context: '5a43354f1a070f28107f806a',
     user: {},
     shoppingCart: {
       UserId: '',
@@ -25,6 +25,7 @@ export const store = new Vuex.Store({
       state.shoppingCart.UserId = payload.UserId
       state.shoppingCart.CreatedBy = payload.Name
       localStorage.setItem('IsAuthenticated', true)
+      localStorage.setItem('UserId', payload.UserId)
       if (payload.AccessLevel !== 4) {
         localStorage.setItem('forAdmin', true)
       }
@@ -121,7 +122,8 @@ export const store = new Vuex.Store({
           method: 'post',
           url: 'http://localhost:3002/api/v1/quotation',
           data: {
-            ShoppingCartId: state.shoppingCart._id
+            ShoppingCartId: state.shoppingCart._id,
+            Customer : state.user
           },
           headers: {
             'Authorization': 'Bearer ' + state.user.AuthCode

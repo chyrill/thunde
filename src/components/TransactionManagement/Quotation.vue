@@ -27,25 +27,57 @@
                     <v-card-text>
                       <v-container>
                         <v-layout row wrap>
-                          <v-flex xs10 offset-xs1 style="text-align:justify">
+                          <v-flex xs4 offset-xs1 style="text-align:justify">
                             <p><b>Customer Name:</b>  {{quotationItem.CreatedBy}}</p>
                           </v-flex>
-                          <v-flex xs10 offset-xs1 style="text-align:justify">
+                          <v-flex xs4 offset-xs1 style="text-align:justify">
+                            <p><b>Company Name:</b>  {{otherInformation.CompanyName}}</p>
+                          </v-flex>
+                          <v-flex xs4 offset-xs1 style="text-align:justify">
+                            <p><b>Company Sector: </b>  {{otherInformation.Sector}}</p>
+                          </v-flex>
+                          <v-flex xs4 offset-xs1 style="text-align:justify">
                             <p><b>Date Created:</b>  {{quotationItem.DateCreated}}</p>
                           </v-flex>
-                          <v-flex xs10 offset-xs1 style="text-align:justify">
-                            <p><h3>Items:</h3> </p>
+                          <v-flex xs10 offset-xs1>
+                              <v-layout row wrap>
+                                  <v-flex xs6 offset-xs1>
+                                      <v-slider label="Mark Up" v-bind:max="100" v-model="MarkUp" @input="markUpChange"></v-slider>
+                                  </v-flex>
+                                  <v-flex xs2 offset-xs1>
+                                      <v-text-field v-model="MarkUp" disabled></v-text-field>
+                                  </v-flex>
+                              </v-layout>
+                          </v-flex>
+                          <v-flex xs10 offset-xs1>
+                              <v-layout row wrap>
+                                 <v-flex xs3 style="text-align:center">
+                                    <p><h3>Product Name</h3> </p>
+                                  </v-flex>
+                                  <v-flex xs3 style="text-align:center">
+                                    <p><h3>Quantity</h3> </p>
+                                  </v-flex>
+                                  <v-flex xs3 style="text-align:center">
+                                    <p><h3>Unit Price</h3> </p>
+                                  </v-flex>
+                                  <v-flex xs3 style="text-align:center">
+                                    <p><h3>Price (PHP)</h3></p>
+                                  </v-flex>
+                             </v-layout>
                           </v-flex>
                           <template v-for="item in quotationItem.Items">
                           <v-flex xs10 offset-xs1>
                             <v-layout row wrap>
-                              <v-flex xs4>
+                              <v-flex xs3>
                                 <b>{{item.Name}} </b>
                               </v-flex>
-                              <v-flex xs4>
+                              <v-flex xs3>
                                 {{item.Quantity}} items
                               </v-flex>
-                              <v-flex xs4>
+                              <v-flex xs3>
+                                {{item.UnitPrice}} {{item.Price.Currency}}
+                              </v-flex>
+                              <v-flex xs3>
                                 <v-text-field type="number" label="Amount" v-model="item.TotalAmount"  @keyup="getTotalQuote"/>
                               </v-flex>
                             </v-layout>
@@ -76,6 +108,7 @@ import axios from 'axios'
 export default {
   data () {
     return {
+      MarkUp: 0,
       Errors: '',
       Snackbar: false,
       snackbar: {
@@ -105,17 +138,20 @@ export default {
         }
       ],
       quotationItem: {},
-      totalQuote: 0
+      otherInformation: {},
+      totalQuote: 0,
+      Currencies: {}
     }
   },
   mounted () {
     this.getQuotation()
+    this.getCurrency()
   },
   methods: {
     getQuotation () {
       axios({
         method: 'get',
-        url: 'http://ed132795.ngrok.io/api/v1/quotation/new',
+        url: 'http://localhost:3002/api/v1/quotation/new',
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }
@@ -137,7 +173,7 @@ export default {
     submit () {
       axios({
         method: 'put',
-        url: 'http://ed132795.ngrok.io/api/v1/quotation/quote',
+        url: 'http://localhost:3002/api/v1/quotation/quote',
         data: this.quotationItem,
         headers: {
           'Authorization' : 'Bearer ' + this.$store.getters.getAuthCode
@@ -167,18 +203,52 @@ export default {
     getQuotationById () {
       axios({
         method: 'get',
-        url: 'http://ed132795.ngrok.io/api/v1/quotation/' + this.editItemId,
+        url: 'http://localhost:3002/api/v1/quotation/' + this.editItemId,
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }
       })
         .then(response => {
           this.quotationItem = response.data.model
+          this.otherInformation = response.data.model.Customer.Others
+          if (this.otherInformation.Sector === 'Government') {
+              this.MarkUp = 50
+          }
+          else {
+              this.MarkUp = 100
+          }
           for (let item in this.quotationItem.Items) {
-            this.quotationItem.Items[item]['TotalAmount'] =  parseFloat(this.quotationItem.Items[item].Price.Amount * this.quotationItem.Items[item].Quantity);
-            this.totalQuote = parseFloat(this.totalQuote+ this.quotationItem.Items[item]['TotalAmount']);
+            var exchangeRate = this.Currencies[this.quotationItem.Items[item].Price.Currency]
+            var price =  parseFloat(this.quotationItem.Items[item].Price.Amount).toFixed(2)
+            var markup = parseFloat(this.MarkUp/100).toFixed(2)
+            this.quotationItem.Items[item]['UnitPrice'] = parseFloat(parseFloat(price) + parseFloat(price * markup)).toFixed(2)
+            this.quotationItem.Items[item]['TotalAmount'] =  parseFloat((this.quotationItem.Items[item]['UnitPrice']/exchangeRate)  * this.quotationItem.Items[item].Quantity).toFixed(2)
+            this.totalQuote = parseFloat(this.totalQuote + this.quotationItem.Items[item]['TotalAmount']).toFixed(2)
           }
         })
+    },
+    getCurrency () {
+        axios({
+          method: 'get',
+          url: 'https://api.fixer.io/latest?base=PHP'
+        })
+        .then(response =>{
+            this.Currencies = response.data.rates;
+        })
+    },
+    markUpChange () {
+        for (let item in this.quotationItem.Items) {
+            var exchangeRate = this.Currencies[this.quotationItem.Items[item].Price.Currency]
+            var price =  parseFloat(this.quotationItem.Items[item].Price.Amount).toFixed(2)
+            var markup = parseFloat(this.MarkUp/100).toFixed(2)
+            this.quotationItem.Items[item]['UnitPrice'] = parseFloat(parseFloat(price) + parseFloat(price * markup)).toFixed(2)
+            this.quotationItem.Items[item]['TotalAmount'] =  parseFloat((this.quotationItem.Items[item]['UnitPrice']/exchangeRate)  * this.quotationItem.Items[item].Quantity).toFixed(2)
+            this.totalQuote = parseFloat(parseFloat(this.totalQuote) + parseFloat(this.quotationItem.Items[item]['TotalAmount'])).toFixed(2)
+          }
+        this.totalQuote = 0
+        for (let item in this.quotationItem.Items) {
+            this.totalQuote = parseFloat(parseFloat(this.totalQuote) + parseFloat(this.quotationItem.Items[item]['TotalAmount'])).toFixed(2)
+        }
     }
   }
 }
