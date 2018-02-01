@@ -18,6 +18,7 @@
                 .then(response => {
                     localStorage.setItem('Token', response.data.model)
                     this.$store.dispatch('jwtdecode', response.data.model)
+                    this.$router.go
                     this.$router.push('/')
             })
                 .catch(err => {

@@ -201,7 +201,7 @@ export default {
               title: 'User Management',
               active: false,
               items: [
-                  {title: 'User Accounts', href: '/admin/user', action: 'person'},
+                  {title: 'User Accounts', href: '/admin/user', action: 'person', method: ''},
                   {title: 'Log out', href:'/logout', action: 'reply', method: 'logout'}
               ]
           }
@@ -231,7 +231,6 @@ export default {
     localStorage.setItem('Context','5a43354f1a070f28107f806a')
     this.$store.dispatch('setDefaultUser')
     this.$store.dispatch('setShoppinCart')
-    this.getQuotationByUser()
     axios.get('http://ip-api.com/json')
       .then(response =>{
         axios.post('http://localhost:4000/api/v1/city', { Name: response.data.city })
@@ -275,6 +274,9 @@ export default {
       localStorage.removeItem('AuthCode')
       localStorage.removeItem('forAdmin')
       localStorage.removeItem('ContactId')
+      localStorage.removeItem('ConfirmEmail')
+      localStorage.removeItem('IsAuthenticated')
+      localStorage.removeItem('UserId')
       this.$router.push('/signin')
       this.IsAdminPage =false
     },
@@ -303,8 +305,8 @@ export default {
     },
     refreshAllData () {
         var admin = localStorage.getItem('forAdmin')
+        var isAuth = localStorage.getItem('Token')
         if (admin) {
-            console.log('hehhehehe')
             axios({
                 method: 'get',
                 url: 'http://localhost:3002/api/v1/quotation/new',
@@ -321,7 +323,10 @@ export default {
                  }
             })
         }
+        if (isAuth === null || isAuth === undefined || !admin) {
+        }
         else {
+            console.log('shit pa')
             axios({
                 method: 'get',
                 url: 'http://localhost:3002/api/v1/quotation/quote/' + localStorage.getItem('UserId'),
@@ -338,7 +343,6 @@ export default {
                 }
             })
         }
-        
     }
   }
 }

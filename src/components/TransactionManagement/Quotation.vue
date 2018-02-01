@@ -1,24 +1,80 @@
 <template>
-  <v-container>
-    <v-card>
-      <v-toolbar dark color="primary">
-        <v-toolbar-title>Quotations</v-toolbar-title>
-      </v-toolbar>
-      <v-card-text>
-        <v-data-table
-      v-bind:headers="headers"
-      :items="items"
-      hide-actions
-      class="elevation-1"
-    >
-    <template slot="items" slot-scope="props">
-      <td>{{ props.item.CreatedBy }}</td>
-       <td>{{ props.item.DateCreated }}</td>
-       <td><v-btn icon @click="openEditDialog(props.item._id)"><v-icon>edit</v-icon></v-btn></td>
-    </template>
-  </v-data-table>
-      </v-card-text>
-    </v-card>
+    <v-container>
+        <v-card>
+            <v-tabs fixed icons centered>
+                <v-toolbar color="primary" dark>
+                    <v-toolbar-title>Quotation Management</v-toolbar-title>
+                    <v-tabs-bar dark color="primary" slot="extension">
+                        <v-tabs-slider color="grey"></v-tabs-slider>
+                        <v-tabs-item href="#new">
+                            <v-icon>fiber_new</v-icon>
+                            New Request
+                        </v-tabs-item>
+                        <v-tabs-item href="#quoted">
+                            <v-icon>receipt</v-icon>
+                            Quoted
+                        </v-tabs-item>
+                        <v-tabs-item href="#approve">
+                            <v-icon>check</v-icon>
+                            approved
+                        </v-tabs-item>
+                    </v-tabs-bar>
+                  </v-toolbar>
+                <v-tabs-items>
+<!--                    new tab-->
+                    <v-tabs-content id="new">
+                        <v-card-text>
+                            <v-flex xs10 offset-xs1>
+                                <v-data-table v-bind:headers="Newheaders" :items="newquotations" hide-actions class="elevation-2">
+                                    <template slot="items" slot-scope="props">
+                                        <td>{{props.item.CreatedBy}}</td>
+                                        <td>{{props.item.DateCreated}}</td>
+                                        <td><v-btn icon flat @click="openEditDialog(props.item._id)"><v-icon>mode_edit</v-icon></v-btn></td>
+                                    </template>
+                                </v-data-table>
+                            </v-flex>
+                        </v-card-text>
+                    </v-tabs-content>
+<!--                    end new tab-->
+<!--                     quoted tab-->
+                    <v-tabs-content id="quoted">
+                        <v-card-text>
+                            <v-flex xs10 offset-xs1>
+                                <v-data-table v-bind:headers="Quotedheaders" :items="quotedquotations" hide-actions class="elevation-2">
+                                    <template slot="items" slot-scope="props">
+                                        <td>{{props.item.CreatedBy}}</td>
+                                        <td>{{props.item.DateCreated}}</td>
+                                        <td>{{props.item.TotalQuote}}</td>
+                                        <td>{{props.item.DateUpdated}}</td>
+                                        <td><v-btn icon flat @click="openEditDialog(props.item._id)"><v-icon>mode_edit</v-icon></v-btn></td>
+                                    </template>
+                                </v-data-table>
+                            </v-flex>
+                        </v-card-text>
+                    </v-tabs-content>
+<!--   quoted tab-->
+<!-- approved tab-->
+                    <v-tabs-content id="approve">
+                        <v-card-text>
+                            <v-flex xs10 offset-xs1>
+                                <v-data-table v-bind:headers="Approvedheaders" :items="approvedquotations" hide-actions class="elevation-2">
+                                    <template slot="items" slot-scope="props">
+                                        <td>{{props.item.CreatedBy}}</td>
+                                        <td>{{props.item.DateCreated}}</td>
+                                        <td>{{props.item.TotalQuote}}</td>
+                                        <td>{{props.item.DateUpdated}}</td>
+                                    </template>
+                                </v-data-table>
+                            </v-flex>
+                        </v-card-text>
+                    </v-tabs-content>
+<!--end of approved tab-->
+                </v-tabs-items>
+            </v-tabs>
+        </v-card>
+        
+      
+<!--   editViewDialog -->
     <v-dialog v-model="editViewDialog" max-width="800px">
               <v-toolbar dark color="primary">
                  <v-toolbar-title>Quotation Information</v-toolbar-title>
@@ -105,6 +161,7 @@
                     </v-card-actions>
                    </v-card>
                  </v-dialog>
+<!--end of viewDialog -->
             <!-- dialog box exchange rate-->
                 <v-dialog v-model="exchangeDialog" max-width="500">
                     <v-card>
@@ -136,6 +193,9 @@ import axios from 'axios'
 export default {
   data () {
     return {
+      quotedquotations: [],
+      approvedquotations: [],
+      newquotations: [],
       exchangeDialog: false,
       MarkUp: 0,
       Errors: '',
@@ -151,20 +211,70 @@ export default {
       editItemId: '',
       editViewDialog: false,
       items: [],
-      headers: [
+      Newheaders: [
         {
           text: 'Customer Name',
           align: 'center',
           value: 'CreatedBy'
         },
         {
-          text: 'Date Created',
+          text: 'Date Applied',
            align: 'center',
            value: 'DateCreated'
         },
         {
            sortable: false
         }
+      ],
+      Quotedheaders: [
+          {
+              text: 'Customer Name',
+              align: 'center',
+              value: 'CreatedBy'
+          },
+          {
+              text: 'Date Applied',
+              align: 'center',
+              value: 'DateCreated'
+          },
+          {
+              text: 'Total Amount (PHP)',
+              align: 'center',
+              value: 'TotalQuote'
+          },
+          {
+              text: 'Date Quoted',
+              align: 'center',
+              value: 'DateUpdated'
+          },
+          {
+              sortable: false
+          }
+      ],
+      Approvedheaders: [
+          {
+              text: 'Customer Name',
+              align: 'center',
+              value: 'CreatedBy'
+          },
+          {
+              text: 'Date Applied',
+              align: 'center',
+              value: 'DateCreated'
+          },
+          {
+              text: 'Total Amount (PHP)',
+              align: 'center',
+              value: 'TotalQuote'
+          },
+          {
+              text: 'Date Approved',
+              align: 'center',
+              value: 'DateUpdated'
+          },
+          {
+              sortable: false
+          }
       ],
       quotationItem: {},
       otherInformation: {},
@@ -178,15 +288,47 @@ export default {
   },
   methods: {
     getQuotation () {
-      axios({
-        method: 'get',
-        url: 'http://localhost:3002/api/v1/quotation/new',
-        headers: {
-          'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
-        }
-      })
+        axios({
+            method: 'get',
+            url: 'http://localhost:3002/api/v1/quotation',
+            params: {
+                Filters: 'Status:/new/'   
+            },
+            headers: {
+              'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+            }
+          })
         .then(response => {
-          this.items = response.data.items
+          this.newquotations = response.data.items
+        })
+        
+        axios({
+            method: 'get',
+            url: 'http://localhost:3002/api/v1/quotation',
+            params: {
+                Filters: 'Status:/Quoted/'   
+            },
+            headers: {
+              'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+            }
+          })
+        .then(response => {
+           
+          this.quotedquotations = response.data.items
+        })
+        
+        axios({
+            method: 'get',
+            url: 'http://localhost:3002/api/v1/quotation',
+            params: {
+                Filters: 'Status:/Approved/'   
+            },
+            headers: {
+              'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+            }
+          })
+        .then(response => {
+          this.approvedquotations = response.data.items
         })
     },
     getTotalQuote () {
@@ -217,6 +359,7 @@ export default {
           this.snackbar.action = 'check'
           this.snackbar.color = 'green'
           this.Snackbar = !this.Snackbar
+          this.sendNotification(this.quotationItem)
         })
         .catch(err=>{
           this.Errors = err.response.data.message
@@ -251,11 +394,11 @@ export default {
             var exchangeRate = this.Currencies[this.quotationItem.Items[item].Price.Currency]
             var price =  parseFloat(this.quotationItem.Items[item].Price.Amount).toFixed(2)
             var markup = parseFloat(this.MarkUp/100).toFixed(2)
-            this.quotationItem.Items[item]['UnitPrice'] = parseFloat(parseFloat(parseFloat(price) + parseFloat(price * markup))/exchangeRate).toFixed(2)
+            this.quotationItem.Items[item]['UnitPrice'] = parseFloat(parseFloat(parseFloat(parseFloat(price) + parseFloat(price * markup))/exchangeRate) + parseFloat(parseFloat(parseFloat(parseFloat(price) + parseFloat(price * markup))/exchangeRate) * .12)).toFixed(2)
             this.quotationItem.Items[item]['TotalAmount'] =  parseFloat(parseFloat(this.quotationItem.Items[item]['UnitPrice'])  * this.quotationItem.Items[item].Quantity).toFixed(2)
             this.totalQuote = parseFloat(this.totalQuote + this.quotationItem.Items[item]['TotalAmount']).toFixed(2)
           }
-          console.log(this.quotationItem)
+          
         })
     },
     getCurrency () {
@@ -272,7 +415,7 @@ export default {
             var exchangeRate = this.Currencies[this.quotationItem.Items[item].Price.Currency]
             var price =  parseFloat(this.quotationItem.Items[item].Price.Amount).toFixed(2)
             var markup = parseFloat(this.MarkUp/100).toFixed(2)
-            this.quotationItem.Items[item]['UnitPrice'] = parseFloat(parseFloat(parseFloat(price) + parseFloat(price * markup))/exchangeRate).toFixed(2)
+            this.quotationItem.Items[item]['UnitPrice'] = parseFloat(parseFloat(parseFloat(parseFloat(price) + parseFloat(price * markup))/exchangeRate) + parseFloat(parseFloat(parseFloat(parseFloat(price) + parseFloat(price * markup))/exchangeRate) * .12)).toFixed(2)
             this.quotationItem.Items[item]['TotalAmount'] =  parseFloat(parseFloat(this.quotationItem.Items[item]['UnitPrice'])  * this.quotationItem.Items[item].Quantity).toFixed(2)
             this.totalQuote = parseFloat(parseFloat(this.totalQuote) + parseFloat(this.quotationItem.Items[item]['TotalAmount'])).toFixed(2)
           }
@@ -280,6 +423,52 @@ export default {
         for (let item in this.quotationItem.Items) {
             this.totalQuote = parseFloat(parseFloat(this.totalQuote) + parseFloat(this.quotationItem.Items[item]['TotalAmount'])).toFixed(2)
         }
+    },
+    sendNotification (quotationItem) {
+        console.log('hey')
+        var customerName = quotationItem.Customer.Name
+        var companyName = quotationItem.Customer.Others.CompanyName
+        var recipientId = quotationItem.Customer.ContactId
+        quotationItem['CustomerName'] = customerName
+        quotationItem['CustomerCompany'] = companyName
+        
+        for (let item in quotationItem.Items) {
+            var supplierName = quotationItem.Items[item].OtherInformation.SupplierName
+            var supplierAddress = quotationItem.Items[item].OtherInformation.SupplierAddress
+            quotationItem.Items[item]['SupplierName'] = supplierName
+            quotationItem.Items[item]['SupplierAddress'] = supplierAddress
+        }
+        
+        var purchaselink = 'http://localhost:8080/purchase/' + quotationItem._id
+        var declinelink = 'http://localhost:8080/decline/' + quotationItem._id
+        
+        quotationItem['PurchaseLink'] = purchaselink;
+        quotationItem['DeclineLink'] = declinelink;
+        
+        axios({
+            method: 'post',
+            url: 'http://localhost:3005/api/v1/notify/sendSimple',
+            data: {
+                Payload: quotationItem,
+                RecipientId: recipientId,
+                NotificationTemplateId: '5a71129c64e4887f94096868'
+            },
+            headers: {
+                'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+            }
+        })
+        .then (response => {
+            this.Errors = 'Successfully sent quotation to Client'
+            this.snackbar.action = 'check'
+            this.snackbar.color = 'green'
+            this.Snackbar = !this.Snackbar
+        })
+        .catch (err => {
+            this.Errors = 'Failed to send quotation to Client'
+            this.snackbar.action = 'clear'
+            this.snackbar.color = 'red'
+            this.Snackbar = !this.Snackbar
+        })
     }
   }
 }

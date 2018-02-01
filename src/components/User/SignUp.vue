@@ -91,23 +91,89 @@ export default {
       this.Data['Context'] = this.$store.getters.getContext
       this.Data['Others'] = this.Others
       this.Data['AccessLevel'] = 4
-      this.Data['link'] = 'http://localhost:8080/confirmemail/'
-      this.Data['NotificationTemplateId'] = '5a6fce0237bb14714ca1373c'
-      axios.post('http://localhost:3000/api/v1/userLogin/signup', this.Data)
-        .then(response => {
-          this.Errors = 'Please verify your email'
-          this.snackbar.color = 'gray'
-          this.snackbar.actions = 'check'
-          this.Snackbar = true
-          setTimeout(this.$router.push('/'),20000)
-          
+      
+      this.checkIfExist()
+    },
+    checkIfExist () {
+      axios({
+          method: 'post',
+          url: 'http://localhost:3000/api/v1/userInfo/exist',
+          data: {
+            Context: this.Data.Context,
+            Email: this.Data.Email,
+            FirstName: this.Data.FirstName,
+            LastName: this.Data.LastName
+          }
+      })
+      .then (response => {
+          this.createRecipient()
+      })
+      .catch (err => {
+        this.Errors = err.response.data.message
+        this.snackbar.color = 'red'
+        this.snackbar.actions = 'close'
+        this.Snackbar = true
+      })
+  },
+    createRecipient () {
+      axios({
+          method: 'post',
+          url: 'http://localhost:3005/api/v1/recipient',
+          data: {
+              Name: this.Data.LastName + ', ' + this.Data.FirstName,
+              Context: this.Data.Context,
+              Email: this.Data.Email,
+              PhoneNumber: this.Data.MobileNumber
+          }
+      })
+      .then (response => {
+          this.createUser(response.data.model._id)
+      })
+      .catch (err => {
+      })
+    },
+    createUser (contactId) {
+        this.Data['ContactId'] = contactId
+        var payload = this.Data
+        axios({
+            method: 'post',
+            url: 'http://localhost:3000/api/v1/userLogin/signup',
+            data: this.Data,
         })
-        .catch(err => {
-          this.Errors = err.response.data.message
-          this.snackbar.color = 'red'
-          this.snackbar.actions = 'close'
-          this.Snackbar = true
+        .then (response => {
+            var user = response.data.model.User
+            console.log(user)
+            var loginId = response.data.model.UserLoginId
+            this.Errors = 'Please verify your email'
+            this.snackbar.color = 'gray'
+            this.snackbar.actions = 'check'
+            this.Snackbar = true
+            this.sendEmailVerification(user, loginId)
         })
+        .catch (err => {
+        })
+    },
+    sendEmailVerification (user, loginId) {
+       axios({
+           method: 'post',
+           url: 'http://localhost:3005/api/v1/notify/sendSimple',
+           data: {
+               NotificationTemplateId: '5a6fce0237bb14714ca1373c',
+               Payload: {
+                   Link: 'http://localhost:8080/confirmemail/' + loginId,
+                   Name: this.Data.LastName + ', ' + this.Data.FirstName
+               },
+               RecipientId: user.ContactId
+           },
+           headers: {
+               'Authorization' : 'Bearer ' + user.AuthCode
+           }
+       })
+       .then (response => {
+           this.$router.push('/')
+       })
+       .catch (err => {
+       })
     }
   },
   components: {
