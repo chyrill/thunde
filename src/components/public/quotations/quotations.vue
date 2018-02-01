@@ -58,7 +58,7 @@
                           <h4>Quantity</h4>
                       </v-flex>
                       <v-flex xs3>
-                          <h4>Unit Price</h4>
+                          <h4>Unit Price (PHP)</h4>
                       </v-flex>
                       <v-flex xs3>
                           <h4>Price (PHP)</h4>
@@ -75,7 +75,7 @@
                             <i>{{item.Quantity}}</i>
                         </v-flex>
                         <v-flex xs3>
-                            <i>{{item.UnitPrice}} {{item.Price.Currency}}</i>
+                            <i>{{item.UnitPrice}}</i>
                         </v-flex>
                         <v-flex xs3>
                             <i>{{item.TotalAmount}}</i>
@@ -83,14 +83,12 @@
                     </template>
                 </v-layout>
               </v-flex>
-<!--
               <v-flex xs3 offset-xs6>
                   <h3>Total Amount:</h3>
               </v-flex>
               <v-flex xs3>
                   {{quotationItem.TotalQuote}}
               </v-flex>
--->
           </v-layout>
       </v-card-text>
     <v-card-actions>

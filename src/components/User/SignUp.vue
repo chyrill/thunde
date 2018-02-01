@@ -91,7 +91,8 @@ export default {
       this.Data['Context'] = this.$store.getters.getContext
       this.Data['Others'] = this.Others
       this.Data['AccessLevel'] = 4
-
+      this.Data['link'] = 'http://localhost:8080/confirmemail/'
+      this.Data['NotificationTemplateId'] = '5a6fce0237bb14714ca1373c'
       axios.post('http://localhost:3000/api/v1/userLogin/signup', this.Data)
         .then(response => {
           this.Errors = 'Please verify your email'
@@ -99,7 +100,7 @@ export default {
           this.snackbar.actions = 'check'
           this.Snackbar = true
           setTimeout(this.$router.push('/'),20000)
-
+          
         })
         .catch(err => {
           this.Errors = err.response.data.message

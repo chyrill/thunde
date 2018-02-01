@@ -146,7 +146,7 @@
                   <v-icon>keyboard_arrow_down</v-icon>
                 </v-list-tile-action>
               </v-list-tile>
-              <v-list-tile v-for="subItem in item.items" v-bind:key="subItem.title" :to="subItem.href" @click.native="sideNav=!sideNav">
+              <v-list-tile v-for="subItem in item.items" v-bind:key="subItem.title" :to="subItem.href" @click.native="doAction(subItem.method)">
                 <v-list-tile-content>
                   <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
                 </v-list-tile-content>
@@ -185,7 +185,7 @@ export default {
             title: 'Product Management',
             active: false,
             items: [
-              { title: 'Products', href: '/admin/product', action: 'list' }
+              { title: 'Products', href: '/admin/product', action: 'list', method: '' }
             ]
           },
           {
@@ -193,7 +193,7 @@ export default {
             title: 'Transaction Management',
             active: false,
             items: [
-              { title: 'Quotation', href: '/admin/quotation', action: 'attach_money' }
+              { title: 'Quotation', href: '/admin/quotation', action: 'attach_money', method: '' }
             ]
           },
           {
@@ -201,7 +201,8 @@ export default {
               title: 'User Management',
               active: false,
               items: [
-                  {title: 'User Accounts', href: '/admin/user', action: 'person'}
+                  {title: 'User Accounts', href: '/admin/user', action: 'person'},
+                  {title: 'Log out', href:'/logout', action: 'reply', method: 'logout'}
               ]
           }
         ],
@@ -263,11 +264,17 @@ export default {
     }
   },
   methods: {
+    doAction (value) {
+        if (value === 'logout') {
+            this.Logout()
+        }
+    },
     Logout () {
       this.$store.dispatch('logout')
       localStorage.removeItem('Token')
       localStorage.removeItem('AuthCode')
       localStorage.removeItem('forAdmin')
+      localStorage.removeItem('ContactId')
       this.$router.push('/signin')
       this.IsAdminPage =false
     },

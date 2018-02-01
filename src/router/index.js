@@ -10,6 +10,7 @@ import Quotation from '@/components/TransactionManagement/Quotation'
 import PublicQuotation from '@/components/public/quotations/quotations'
 import EmailConfirmation from '@/components/User/EmailConfirmation'
 import UserAccounts from '@/components/User/accounts/useraccount'
+import LogOut from '@/components/logout'
 
 Vue.use(Router)
 
@@ -75,6 +76,14 @@ export default new Router({
       path: '/admin/user',
       name: 'UserAccounts',
       component: UserAccounts,
+      meta: {
+        forAdmin: true
+      }
+    },
+      {
+      path: '/logout',
+      name: 'Logout',
+      component: LogOut,
       meta: {
         forAdmin: true
       }

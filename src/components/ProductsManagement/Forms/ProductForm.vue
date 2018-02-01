@@ -207,7 +207,7 @@ export default {
   mounted () {
     axios({
       method: 'get',
-      url: 'http://localhost:3001/api/v1/category',
+      url: 'http://locahost:3001/api/v1/category',
       params: {
         Context : localStorage.getItem('Context')
       }
@@ -265,7 +265,7 @@ export default {
     refreshAll () {
       axios({
         method: 'get',
-        url: 'http://localhost:3001/api/v1/category',
+        url: 'http://locahost:3001/api/v1/category',
         params: {
           Context: localStorage.getItem('Context')
         },
@@ -303,7 +303,7 @@ export default {
         if ( this._id === null || this._id === undefined) {
           axios({
             method: 'post',
-            url: 'http://localhost:3001/api/v1/products',
+            url: 'http://locahost:3001/api/v1/products',
             data: this.Data,
             headers: {
             Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
@@ -330,7 +330,7 @@ export default {
           console.log(this.Data)
           axios({
             method: 'put',
-            url: 'http://localhost:3001/api/v1/products',
+            url: 'http://locahost:3001/api/v1/products',
             data: this.Data,
             headers: {
             Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
@@ -463,7 +463,7 @@ export default {
       if (value !== null || value !== undefined) {
         axios({
           method: 'get',
-          url: 'http://localhost:3001/api/v1/products/' + value,
+          url: 'http://locahost:3001/api/v1/products/' + value,
           params: {
             Context: localStorage.getItem('Context')
           }
@@ -516,7 +516,7 @@ export default {
       this.SpecificationItem = []
       axios({
         method: 'get',
-        url: 'http://localhost:3001/api/v1/specification/' + value,
+        url: 'http://locahost:3001/api/v1/specification/' + value,
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
         }

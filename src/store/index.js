@@ -165,6 +165,7 @@ export const store = new Vuex.Store({
     },
     jwtdecode({ commit }, payload) {
       var data = jwt.verify(payload, 'blaiseSecretKey')
+      localStorage.setItem('ContactId', data.user.ContactId)
       localStorage.setItem('AuthCode', data.user.AuthCode)
       localStorage.setItem('ConfirmEmail', data.user.ConfirmEmail)
       localStorage.removeItem('defaultUserId')

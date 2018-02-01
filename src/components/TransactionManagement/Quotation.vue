@@ -39,6 +39,9 @@
                           <v-flex xs4 offset-xs1 style="text-align:justify">
                             <p><b>Date Created:</b>  {{quotationItem.DateCreated}}</p>
                           </v-flex>
+                          <v-flex>
+                              <v-btn color="indigo" @click="exchangeDialog=!exchangeDialog" dark>See Exchange Rate</v-btn>
+                          </v-flex>
                           <v-flex xs10 offset-xs1>
                               <v-layout row wrap>
                                   <v-flex xs6 offset-xs1>
@@ -51,16 +54,19 @@
                           </v-flex>
                           <v-flex xs10 offset-xs1>
                               <v-layout row wrap>
-                                 <v-flex xs3 style="text-align:center">
+                                 <v-flex xs2 style="text-align:center">
                                     <p><h3>Product Name</h3> </p>
                                   </v-flex>
-                                  <v-flex xs3 style="text-align:center">
+                                  <v-flex xs2 style="text-align:center">
                                     <p><h3>Quantity</h3> </p>
                                   </v-flex>
-                                  <v-flex xs3 style="text-align:center">
-                                    <p><h3>Unit Price</h3> </p>
+                                  <v-flex xs2 style="text-align:center">
+                                    <p><h3>Original Price</h3> </p>
                                   </v-flex>
-                                  <v-flex xs3 style="text-align:center">
+                                  <v-flex xs2 style="text-align:center">
+                                    <p><h3>Unit Price (PHP)</h3> </p>
+                                  </v-flex>
+                                  <v-flex xs2 style="text-align:center">
                                     <p><h3>Price (PHP)</h3></p>
                                   </v-flex>
                              </v-layout>
@@ -68,16 +74,19 @@
                           <template v-for="item in quotationItem.Items">
                           <v-flex xs10 offset-xs1>
                             <v-layout row wrap>
-                              <v-flex xs3>
+                              <v-flex xs2>
                                 <b>{{item.Name}} </b>
                               </v-flex>
-                              <v-flex xs3>
+                              <v-flex xs2>
                                 {{item.Quantity}} items
                               </v-flex>
-                              <v-flex xs3>
-                                {{item.UnitPrice}} {{item.Price.Currency}}
+                              <v-flex xs2>
+                                {{item.Price.Amount}} {{item.Price.Currency}}
                               </v-flex>
-                              <v-flex xs3>
+                              <v-flex xs2>
+                                  {{item.UnitPrice}}
+                              </v-flex>
+                              <v-flex xs2>
                                 <v-text-field type="number" label="Amount" v-model="item.TotalAmount"  @keyup="getTotalQuote"/>
                               </v-flex>
                             </v-layout>
@@ -96,6 +105,25 @@
                     </v-card-actions>
                    </v-card>
                  </v-dialog>
+            <!-- dialog box exchange rate-->
+                <v-dialog v-model="exchangeDialog" max-width="500">
+                    <v-card>
+                        <v-toolbar color="primary" dark>
+                            <v-toolbar-title>Exchange Rates</v-toolbar-title>
+                            <v-spacer></v-spacer>
+                            <v-btn icon flat dark @click="exchangeDialog=!exchangeDialog"><v-icon>clear</v-icon></v-btn>
+                        </v-toolbar>
+                        <v-card-text>
+                            <v-flex xs12>
+                                <h3>Base: Peso (PHP)</h3>
+                            </v-flex>
+                            <v-flex xs12 v-for="(value, propName) in Currencies">
+                                <v-text-field :label="propName" :value="value" disabled/>
+                            </v-flex>
+                        </v-card-text>
+                    </v-card>
+                </v-dialog>
+            <!--end of dialog box-->
                  <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" :top="snackbar.top" :multi-line="snackbar.multi" :vertical="snackbar.vertical" v-model="Snackbar"> {{Errors}} <v-icon>{{snackbar.action}}</v-icon></v-snackbar>
   </v-container>
 </template>
@@ -108,6 +136,7 @@ import axios from 'axios'
 export default {
   data () {
     return {
+      exchangeDialog: false,
       MarkUp: 0,
       Errors: '',
       Snackbar: false,
@@ -171,6 +200,7 @@ export default {
       }
     },
     submit () {
+      this.quotationItem['TotalQuote'] = this.totalQuote
       axios({
         method: 'put',
         url: 'http://localhost:3002/api/v1/quotation/quote',
@@ -221,10 +251,11 @@ export default {
             var exchangeRate = this.Currencies[this.quotationItem.Items[item].Price.Currency]
             var price =  parseFloat(this.quotationItem.Items[item].Price.Amount).toFixed(2)
             var markup = parseFloat(this.MarkUp/100).toFixed(2)
-            this.quotationItem.Items[item]['UnitPrice'] = parseFloat(parseFloat(price) + parseFloat(price * markup)).toFixed(2)
-            this.quotationItem.Items[item]['TotalAmount'] =  parseFloat((this.quotationItem.Items[item]['UnitPrice']/exchangeRate)  * this.quotationItem.Items[item].Quantity).toFixed(2)
+            this.quotationItem.Items[item]['UnitPrice'] = parseFloat(parseFloat(parseFloat(price) + parseFloat(price * markup))/exchangeRate).toFixed(2)
+            this.quotationItem.Items[item]['TotalAmount'] =  parseFloat(parseFloat(this.quotationItem.Items[item]['UnitPrice'])  * this.quotationItem.Items[item].Quantity).toFixed(2)
             this.totalQuote = parseFloat(this.totalQuote + this.quotationItem.Items[item]['TotalAmount']).toFixed(2)
           }
+          console.log(this.quotationItem)
         })
     },
     getCurrency () {
@@ -241,8 +272,8 @@ export default {
             var exchangeRate = this.Currencies[this.quotationItem.Items[item].Price.Currency]
             var price =  parseFloat(this.quotationItem.Items[item].Price.Amount).toFixed(2)
             var markup = parseFloat(this.MarkUp/100).toFixed(2)
-            this.quotationItem.Items[item]['UnitPrice'] = parseFloat(parseFloat(price) + parseFloat(price * markup)).toFixed(2)
-            this.quotationItem.Items[item]['TotalAmount'] =  parseFloat((this.quotationItem.Items[item]['UnitPrice']/exchangeRate)  * this.quotationItem.Items[item].Quantity).toFixed(2)
+            this.quotationItem.Items[item]['UnitPrice'] = parseFloat(parseFloat(parseFloat(price) + parseFloat(price * markup))/exchangeRate).toFixed(2)
+            this.quotationItem.Items[item]['TotalAmount'] =  parseFloat(parseFloat(this.quotationItem.Items[item]['UnitPrice'])  * this.quotationItem.Items[item].Quantity).toFixed(2)
             this.totalQuote = parseFloat(parseFloat(this.totalQuote) + parseFloat(this.quotationItem.Items[item]['TotalAmount'])).toFixed(2)
           }
         this.totalQuote = 0
