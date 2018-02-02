@@ -437,6 +437,7 @@ export default {
             var supplierAddress = quotationItem.Items[item].OtherInformation.SupplierAddress
             quotationItem.Items[item]['SupplierName'] = supplierName
             quotationItem.Items[item]['SupplierAddress'] = supplierAddress
+            quotationItem.Items[item]['Images'] = quotationItem.Items[item].Images[0]
         }
         
         var purchaselink = 'http://localhost:8080/purchase/' + quotationItem._id
@@ -444,7 +445,7 @@ export default {
         
         quotationItem['PurchaseLink'] = purchaselink;
         quotationItem['DeclineLink'] = declinelink;
-        
+        console.log(quotationItem)
         axios({
             method: 'post',
             url: 'http://localhost:3005/api/v1/notify/sendSimple',
