@@ -11,6 +11,7 @@ import PublicQuotation from '@/components/public/quotations/quotations'
 import EmailConfirmation from '@/components/User/EmailConfirmation'
 import UserAccounts from '@/components/User/accounts/useraccount'
 import LogOut from '@/components/logout'
+import MyTransaction from '@/components/public/transactions/transactions'
 
 Vue.use(Router)
 
@@ -80,13 +81,17 @@ export default new Router({
         forAdmin: true
       }
     },
-      {
+    {
       path: '/logout',
       name: 'Logout',
       component: LogOut,
       meta: {
         forAdmin: true
       }
+    },
+    {
+      path: '/transactions',
+      component: MyTransaction
     }
   ],
   mode: 'history'

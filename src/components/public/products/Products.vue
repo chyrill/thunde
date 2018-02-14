@@ -10,6 +10,9 @@
       <v-flex xs6>
         <v-select v-bind:items="categories" item-value="Name" item-text="Name" label="Category" hint="Product Category" v-model="Category" append-icon="filter_list" @input="search" />
       </v-flex>
+      <v-flex xs12>
+        <v-select v-bind:items="brandList" label="Brand" v-model="Brand" @input="searchMoreFilter"></v-select>
+      </v-flex>
       <v-flex xs6>
         <v-select v-bind:items="specification" v-model="SpecificationFilter" label="Specification" @input="searchWithSpecification"></v-select>
       </v-flex>
@@ -112,11 +115,13 @@ export default {
       Loading: false,
       Errors: '',
       viewItemId: '',
-      viewItemDailog: false
+      viewItemDailog: false,
+      brandList: [],
+      Brand: ''
     }
   },
   mounted () {
-      this.Loading = true
+    this.Loading = true
     axios({
       method: 'get',
       url: 'http://localhost:3001/api/v1/products/',
@@ -127,22 +132,27 @@ export default {
         Context: localStorage.getItem('Context')
       }
     }).
-       then(response => {
-         this.Products = response.data.items
-         for (let item in response.data.items) {
-            for (let specItem in response.data.items[item].Specification) {
-              if (this.specification.indexOf(specItem) < 0) {
-                this.specification.push(specItem)
-              }
-            }
-         }
+    then(response => {
+      this.Products = response.data.items
+      for (let item in response.data.items) {
+        var data = this.Products[item]
+        for (let specItem in response.data.items[item].Specification) {
+          if (this.specification.indexOf(specItem) < 0) {
+            this.specification.push(specItem)
+          }
+
+          if (this.brandList.indexOf(data.OtherInformation.SupplierName) < 0) {
+            this.brandList.push(data.OtherInformation.SupplierName)
+          }
+        }
+      }
          this.Loading = false
-       })
-       .catch(err => {
-         this.Products = err.response.data.items
-         this.Loading = false
-       })
-      this.refreshAll()
+    })
+    .catch(err => {
+      this.Products = err.response.data.items
+      this.Loading = false
+    })
+    this.refreshAll()
   },
   methods: {
     searchMoreFilter () {
@@ -152,7 +162,7 @@ export default {
       params:{
         skip: this.Skip,
         limit: 20,
-        Filters: 'Name:/' + this.ProductName + '/,' + 'Category:/' + this.Category + '/,Specification.' + this.SpecificationFilter + ':/' + this.SpecificationValueFilter + '/',
+        Filters: 'Name:/' + this.ProductName + '/,' + 'Category:/' + this.Category + '/,Specification.' + this.SpecificationFilter + ':/' + this.SpecificationValueFilter + '/,OtherInformation.SupplierName:/' + this.Brand + '/',
         Context: localStorage.getItem('Context')
       }
     }).

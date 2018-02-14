@@ -170,10 +170,32 @@ export default {
            }
        })
        .then (response => {
-           this.$router.push('/')
+          this.saveToLeadManagement()
        })
        .catch (err => {
        })
+    },
+    saveToLeadManagement () {
+      let payload = {
+        FirstName: this.Data.FirstName,
+        LastName: this.Data.LastName,
+        Address: this.Data.Address1 + ', ' + this.Data.Address2 + ', ' + this.Data.City + ', ' + this.Data.State + ', ' + this.Data.Country,
+        MobileNumber: this.Data.MobileNumber,
+        Context: localStorage.getItem('Context'),
+        Email: this.Data.Email
+      }
+
+      axios({
+        method: 'post',
+        url: 'http://localhost:3003/api/v1/client',
+        data: payload
+      })
+      .then(response => {
+        this.$router.push('/')
+      })
+      .catch(err => {
+        
+      })
     }
   },
   components: {

@@ -68,7 +68,8 @@
       <span style="color:#0091EA"><h2>Supplier Information</h2></span>
     </v-flex>
       <v-flex xs10 offset-xs1>
-        <v-text-field label="Supplier Name"  required v-model="SupplierName" :error-messages="supplierNameErrors" @blur="$v.SupplierName.$touch()" @input="$v.SupplierName.$touch()"/>
+        <!-- <v-text-field label="Supplier Name"  required v-model="SupplierName" :error-messages="supplierNameErrors" @blur="$v.SupplierName.$touch()" @input="$v.SupplierName.$touch()"/> -->
+        <v-select v-bind:items="BrandInformations" v-model="SupplierName" label="Supplier Name" :error-messages="supplierNameErrors" autocomplete item-text="SupplierName" item-value="SupplierName" cache-items tags @input="setOtherInfomtaion"></v-select>
       </v-flex>
       <v-flex xs10 offset-xs1>
         <v-text-field multi-line label="Address" v-model="SupplierAddress" :error-messages="supplierAddressErrors" @blur="$v.SupplierAddress.$touch()" @input="$v.SupplierAddress.$touch()" />
@@ -201,30 +202,13 @@ export default {
       Specification: {
 
       },
-      SpecificationItem: []
+      SpecificationItem: [],
+      BrandInformations: []
     }
   },
   mounted () {
-    axios({
-      method: 'get',
-      url: 'http://locahost:3001/api/v1/category',
-      params: {
-        Context : localStorage.getItem('Context')
-      }
-    })
-      .then(response =>{
-        this.categories = response.data.items
-      })
-    axios({
-      method: 'get',
-      url: 'https://api.fixer.io/latest'
-    })
-      .then(response =>{
-        var rates = response.data.rates
-        for (let i in rates) {
-          this.currencies.push(i)
-        }
-      })
+    this.refreshAll()
+    this.setBrandInformationListing()
   },
   methods: {
     tickUpload () {
@@ -265,16 +249,27 @@ export default {
     refreshAll () {
       axios({
         method: 'get',
-        url: 'http://locahost:3001/api/v1/category',
+        url: 'http://localhost:3001/api/v1/category',
         params: {
           Context: localStorage.getItem('Context')
         },
         headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
+          Authorization: 'Bearer ' + localStorage.getItem('Context')
         }
       })
         .then(response => {
+          console.log('puta')
           this.categories = response.data.items
+          axios({
+            method: 'get',
+            url: 'https://api.fixer.io/latest'
+          })
+          .then(response =>{
+            var rates = response.data.rates
+            for (let i in rates) {
+            this.currencies.push(i)
+            }
+          })
         })
         .catch(err => {
 
@@ -327,7 +322,6 @@ export default {
         else {
 
           this.Data['_id'] = this._id
-          console.log(this.Data)
           axios({
             method: 'put',
             url: 'http://locahost:3001/api/v1/products',
@@ -361,6 +355,45 @@ export default {
       for (let item in this) {
         this[item] = ''
       }
+    },
+    setBrandInformationListing () {
+      axios({
+        method: 'get',
+        url: 'http://localhost:3001/api/v1/products',
+        params: {
+           Context: localStorage.getItem('Context'),
+           limit: 100
+        },
+        headers: {
+          'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+        }
+      })
+      .then(response => {
+        var products = response.data.items
+
+        for (let i in products) {
+          var product = products[i]
+
+          var exist = this.BrandInformations.filter(data => {return data.SupplierName === product.OtherInformation.SupplierName})
+
+          if (exist !== null || exist !== undefined) {
+            this.BrandInformations.push(product.OtherInformation)
+          }
+        }
+      })
+      .catch(err => {
+        
+      })
+    },
+    setOtherInfomtaion () {
+      var data = this.BrandInformations.filter(data => {return data.SupplierName === this.SupplierName[0] })
+
+      var brandInformation = data[0]
+
+      this.SupplierAddress = brandInformation.SupplierAddress
+      this.SupplierEmail = brandInformation.SupplierEmail
+      this.SupplierContactNumber = brandInformation.SupplierContactNumber
+   
     }
   },
   computed: {
@@ -433,7 +466,7 @@ export default {
   },
   watch: {
     validForm (value) {
-      console.log(value)
+      
       if (value) {
 
           this.$emit('isValid',false)
@@ -463,7 +496,7 @@ export default {
       if (value !== null || value !== undefined) {
         axios({
           method: 'get',
-          url: 'http://locahost:3001/api/v1/products/' + value,
+          url: 'http://localhost:3001/api/v1/products/' + value,
           params: {
             Context: localStorage.getItem('Context')
           }
@@ -484,7 +517,7 @@ export default {
               this.SpecificationItem.push(propName)
               var data = modelItem.Specification[prop]
               this.Specification[propName] = data
-              console.log(this.SpecificationItem)
+     
             }
             for (let prop in this.Specification) {
               this.Specification[prop] = modelItem.Specification[prop]
@@ -493,7 +526,7 @@ export default {
       }
     },
     clearForm (value) {
-      console.log('hey shit')
+    
       this.Name= ''
       this.Description= ''
       this.Features= ''
@@ -516,7 +549,7 @@ export default {
       this.SpecificationItem = []
       axios({
         method: 'get',
-        url: 'http://locahost:3001/api/v1/specification/' + value,
+        url: 'http://localhost:3001/api/v1/specification/' + value,
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
         }
@@ -529,7 +562,7 @@ export default {
 
           }
           this.SpecificationItem = response.data.model.SpecificationItem
-          console.log(this.Specification)
+  
         })
         .catch(err => {
 
