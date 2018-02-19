@@ -298,7 +298,7 @@ export default {
         if ( this._id === null || this._id === undefined) {
           axios({
             method: 'post',
-            url: 'http://locahost:3001/api/v1/products',
+            url: 'http://localhost:3001/api/v1/products',
             data: this.Data,
             headers: {
             Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
@@ -324,7 +324,7 @@ export default {
           this.Data['_id'] = this._id
           axios({
             method: 'put',
-            url: 'http://locahost:3001/api/v1/products',
+            url: 'http://localhost:3001/api/v1/products',
             data: this.Data,
             headers: {
             Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
@@ -382,7 +382,7 @@ export default {
         }
       })
       .catch(err => {
-        
+
       })
     },
     setOtherInfomtaion () {
@@ -393,7 +393,7 @@ export default {
       this.SupplierAddress = brandInformation.SupplierAddress
       this.SupplierEmail = brandInformation.SupplierEmail
       this.SupplierContactNumber = brandInformation.SupplierContactNumber
-   
+
     }
   },
   computed: {
@@ -466,7 +466,7 @@ export default {
   },
   watch: {
     validForm (value) {
-      
+
       if (value) {
 
           this.$emit('isValid',false)
@@ -517,7 +517,7 @@ export default {
               this.SpecificationItem.push(propName)
               var data = modelItem.Specification[prop]
               this.Specification[propName] = data
-     
+
             }
             for (let prop in this.Specification) {
               this.Specification[prop] = modelItem.Specification[prop]
@@ -526,7 +526,7 @@ export default {
       }
     },
     clearForm (value) {
-    
+
       this.Name= ''
       this.Description= ''
       this.Features= ''
@@ -562,7 +562,7 @@ export default {
 
           }
           this.SpecificationItem = response.data.model.SpecificationItem
-  
+
         })
         .catch(err => {
 
