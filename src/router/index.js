@@ -99,9 +99,9 @@ export default new Router({
     //   path: 'purchase/:id',
     //   component: ConfirmPurchase
     // }, {
-    path: 'decline/:id',
-    component: DeclinePurchase
-  }
-],
-mode: 'history'
+    //   path: 'decline/:id',
+    //   component: DeclinePurchase
+    // }
+  ],
+  mode: 'history'
 })
