@@ -21,6 +21,22 @@
 				</v-card>
 			</v-flex>
 			<!-- End of Purchase Order Table -->
+			<!-- Payment table -->
+			<v-flex xs10 offset-xs1>
+				<v-card>
+					<v-toolbar color="primary" dark extended>
+						<v-toolbar-title>My Payments</v-toolbar-title>
+						<v-btn fab absolute color="error" @click="" dark><v-icon>plus</v-icon></v-btn>
+					</v-toolbar>
+					<v-card-text>
+						<v-data-table v-bind:headers="PaymentHeaders" :items="PaymentList" hide-actions class="elevation-1">
+							<template slot="items" slot-scope="props">
+							</template>
+						</v-data-table>
+					</v-card-text>
+				</v-card>
+			</v-flex>
+			<!-- end of payment table -->
 		</v-layout>
 	</v-container>
 </template>
