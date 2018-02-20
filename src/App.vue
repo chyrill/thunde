@@ -230,7 +230,7 @@ export default {
     localStorage.setItem('Context','5a43354f1a070f28107f806a')
     this.$store.dispatch('setDefaultUser')
     this.$store.dispatch('setShoppinCart')
-    axios.get('httpss://ip-api.com/json')
+    axios.get('https://ip-api.com/json')
       .then(response =>{
         axios.post('https://1510ec71.ngrok.io/api/v1/city', { Name: response.data.city })
             .catch(err => {
