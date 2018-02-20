@@ -42,7 +42,7 @@
 
 				axios({
 					method: 'get',
-					url: 'http://localhost:3002/api/v1/quotation/' + id,
+					url: 'http://8f466630.ngrok.io/api/v1/quotation/' + id,
 					headers: {
 						'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
 					}
@@ -59,7 +59,7 @@
 			updateQuotationItem () {
 				axios({
 					method: 'put',
-					url: 'http://localhost:3002/api/v1/quotation',
+					url: 'http://8f466630.ngrok.io/api/v1/quotation',
 					data: this.QuotationItem,
 					headers: {
 						'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')

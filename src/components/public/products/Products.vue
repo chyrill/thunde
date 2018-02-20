@@ -124,7 +124,7 @@ export default {
     this.Loading = true
     axios({
       method: 'get',
-      url: 'http://localhost:3001/api/v1/products/',
+      url: 'http://5ab1b8cd.ngrok.io/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 20,
@@ -158,7 +158,7 @@ export default {
     searchMoreFilter () {
       axios({
       method: 'get',
-      url: 'http://localhost:3001/api/v1/products/',
+      url: 'http://5ab1b8cd.ngrok.io/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 20,
@@ -198,7 +198,7 @@ export default {
      this.specification = []
      axios({
       method: 'get',
-      url: 'http://localhost:3001/api/v1/products/',
+      url: 'http://5ab1b8cd.ngrok.io/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 20,
@@ -233,7 +233,7 @@ export default {
     addToShoppingCart () {
       axios({
         method: 'get',
-        url: 'http://localhost:3001/api/v1/products/' + this.addItemId,
+        url: 'http://5ab1b8cd.ngrok.io/api/v1/products/' + this.addItemId,
         params: {
           Context: localStorage.getItem('Context')
         }
@@ -257,7 +257,7 @@ export default {
     refreshAll () {
       axios({
         method: 'get',
-        url: 'http://localhost:3001/api/v1/category',
+        url: 'http://5ab1b8cd.ngrok.io/api/v1/category',
         params: {
           Context: localStorage.getItem('Context')
         },

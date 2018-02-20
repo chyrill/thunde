@@ -61,7 +61,7 @@ export default {
   	getProducts () {
   		axios({
   			method: 'get',
-  			url: 'http://localhost:3001/api/v1/products',
+  			url: 'http://5ab1b8cd.ngrok.io/api/v1/products',
   			params: {
   				Context: localStorage.getItem('Context'),
   				limit: 4

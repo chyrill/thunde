@@ -290,7 +290,7 @@ export default {
     getQuotation () {
         axios({
             method: 'get',
-            url: 'http://localhost:3002/api/v1/quotation',
+            url: 'http://8f466630.ngrok.io/api/v1/quotation',
             params: {
                 Filters: 'Status:/new/'   
             },
@@ -304,7 +304,7 @@ export default {
         
         axios({
             method: 'get',
-            url: 'http://localhost:3002/api/v1/quotation',
+            url: 'http://8f466630.ngrok.io/api/v1/quotation',
             params: {
                 Filters: 'Status:/Quoted/'   
             },
@@ -319,7 +319,7 @@ export default {
         
         axios({
             method: 'get',
-            url: 'http://localhost:3002/api/v1/quotation',
+            url: 'http://8f466630.ngrok.io/api/v1/quotation',
             params: {
                 Filters: 'Status:/Approved/'   
             },
@@ -345,7 +345,7 @@ export default {
       this.quotationItem['TotalQuote'] = this.totalQuote
       axios({
         method: 'put',
-        url: 'http://localhost:3002/api/v1/quotation/quote',
+        url: 'http://8f466630.ngrok.io/api/v1/quotation/quote',
         data: this.quotationItem,
         headers: {
           'Authorization' : 'Bearer ' + this.$store.getters.getAuthCode
@@ -376,7 +376,7 @@ export default {
     getQuotationById () {
       axios({
         method: 'get',
-        url: 'http://localhost:3002/api/v1/quotation/' + this.editItemId,
+        url: 'http://8f466630.ngrok.io/api/v1/quotation/' + this.editItemId,
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }
@@ -440,15 +440,15 @@ export default {
             quotationItem.Items[item]['Images'] = quotationItem.Items[item].Images[0]
         }
         
-        var purchaselink = 'http://localhost:8080/purchase/' + quotationItem._id
-        var declinelink = 'http://localhost:8080/decline/' + quotationItem._id
+        var purchaselink = 'https://blaise-scientific-trading.netlify.com/y/purchase/' + quotationItem._id
+        var declinelink = 'https://blaise-scientific-trading-app.netlify.com/decline/' + quotationItem._id
         
         quotationItem['PurchaseLink'] = purchaselink;
         quotationItem['DeclineLink'] = declinelink;
         console.log(quotationItem)
         axios({
             method: 'post',
-            url: 'http://localhost:3005/api/v1/notify/sendSimple',
+            url: 'http://2726d92e.ngrok.io/api/v1/notify/sendSimple',
             data: {
                 Payload: quotationItem,
                 RecipientId: recipientId,

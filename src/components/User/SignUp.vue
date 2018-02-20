@@ -97,7 +97,7 @@ export default {
     checkIfExist () {
       axios({
           method: 'post',
-          url: 'http://localhost:3000/api/v1/userInfo/exist',
+          url: 'http://d4cebfbf.ngrok.io/api/v1/userInfo/exist',
           data: {
             Context: this.Data.Context,
             Email: this.Data.Email,
@@ -118,7 +118,7 @@ export default {
     createRecipient () {
       axios({
           method: 'post',
-          url: 'http://localhost:3005/api/v1/recipient',
+          url: 'http://2726d92e.ngrok.io/api/v1/recipient',
           data: {
               Name: this.Data.LastName + ', ' + this.Data.FirstName,
               Context: this.Data.Context,
@@ -137,7 +137,7 @@ export default {
         var payload = this.Data
         axios({
             method: 'post',
-            url: 'http://localhost:3000/api/v1/userLogin/signup',
+            url: 'http://d4cebfbf.ngrok.io/api/v1/userLogin/signup',
             data: this.Data,
         })
         .then (response => {
@@ -156,11 +156,11 @@ export default {
     sendEmailVerification (user, loginId) {
        axios({
            method: 'post',
-           url: 'http://localhost:3005/api/v1/notify/sendSimple',
+           url: 'http://2726d92e.ngrok.io/api/v1/notify/sendSimple',
            data: {
                NotificationTemplateId: '5a6fce0237bb14714ca1373c',
                Payload: {
-                   Link: 'http://localhost:8080/confirmemail/' + loginId,
+                   Link: 'https://blaise-scientific-trading.netlify.com/confirmemail/' + loginId,
                    Name: this.Data.LastName + ', ' + this.Data.FirstName
                },
                RecipientId: user.ContactId
@@ -187,7 +187,7 @@ export default {
 
       axios({
         method: 'post',
-        url: 'http://localhost:3003/api/v1/client',
+        url: 'http://c54d8915.ngrok.io/api/v1/client',
         data: payload
       })
       .then(response => {
