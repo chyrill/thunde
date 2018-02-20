@@ -47,6 +47,7 @@
 
 <script>
 import axios from 'axios'
+import { productUrl } from '../helpers/apiurl'
 export default {
   name: 'Home',
   data () {
@@ -59,9 +60,10 @@ export default {
   },
   methods: {
   	getProducts () {
+
   		axios({
   			method: 'get',
-  			url: 'https://5ab1b8cd.ngrok.io/api/v1/products',
+  			url: productUrl + '/api/v1/products',
   			params: {
   				Context: localStorage.getItem('Context'),
   				limit: 4
