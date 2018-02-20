@@ -440,7 +440,7 @@ export default {
             quotationItem.Items[item]['Images'] = quotationItem.Items[item].Images[0]
         }
         
-        var purchaselink = 'httpss://blaise-scientific-trading.netlify.com/y/purchase/' + quotationItem._id
+        var purchaselink = 'httpss://blaise-scientific-trading.netlify.com/purchase/' + quotationItem._id
         var declinelink = 'httpss://blaise-scientific-trading-app.netlify.com/decline/' + quotationItem._id
         
         quotationItem['PurchaseLink'] = purchaselink;

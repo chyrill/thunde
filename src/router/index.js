@@ -12,6 +12,8 @@ import EmailConfirmation from '@/components/User/EmailConfirmation'
 import UserAccounts from '@/components/User/accounts/useraccount'
 import LogOut from '@/components/logout'
 import MyTransaction from '@/components/public/transactions/transactions'
+import DeclinePurchase from '@/components/public/purchaseorder/declinepurchase'
+import ConfirmPurchase from '@/components/public/purchaseorder/confirmpurchase'
 
 Vue.use(Router)
 
@@ -92,6 +94,13 @@ export default new Router({
     {
       path: '/transactions',
       component: MyTransaction
+    },
+    {
+      path: 'purchase/:id',
+      component: ConfirmPurchase
+    }, {
+      path: 'decline/:id',
+      component: DeclinePurchase
     }
   ],
   mode: 'history'

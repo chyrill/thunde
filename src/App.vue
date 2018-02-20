@@ -1,10 +1,9 @@
 <template>
     <v-app>
         <v-toolbar absolute :color="IsAdminPage? 'primary': ''" :dark="IsAdminPage? true: false" :flat="!IsAdminPage? true: false"clipped-left app>
-            <v-toolbar-title><v-btn flat to="/" style="font-weight:500">Brand</v-btn></v-toolbar-title>
+            <v-toolbar-title><v-btn flat to="/" style="font-weight:500">Blaise Scientific Trading</v-btn></v-toolbar-title>
             <v-spacer></v-spacer>
             <template v-if="!IsAdminPage">
-                <v-btn flat to="/quotations" v-if="IsAuthenticated"><v-icon left>receipt</v-icon>Quotations</v-btn>
                 <v-btn flat to="/Products"><v-icon left>list</v-icon>Products</v-btn>
                 <v-menu offset-y :offset-overflow="true" :close-on-content-click="false" :nudge-width="250" v-model="menu2">
                   <v-btn slot="activator" flat>
