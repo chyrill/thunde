@@ -231,17 +231,17 @@ export default {
     localStorage.setItem('Context','5a43354f1a070f28107f806a')
     this.$store.dispatch('setDefaultUser')
     this.$store.dispatch('setShoppinCart')
-    axios.get('http://ip-api.com/json')
+    axios.get('httpss://ip-api.com/json')
       .then(response =>{
-        axios.post('http://localhost:4000/api/v1/city', { Name: response.data.city })
+        axios.post('https://1510ec71.ngrok.io/api/v1/city', { Name: response.data.city })
             .catch(err => {
 
         })
-        axios.post('http://localhost:4000/api/v1/country', {Name: response.data.country })
+        axios.post('https://1510ec71.ngrok.io/api/v1/country', {Name: response.data.country })
             .catch(err => {
 
             })
-        axios.post('http://localhost:4000/api/v1/state', {Name: response.data.regionName })
+        axios.post('https://1510ec71.ngrok.io/api/v1/state', {Name: response.data.regionName })
             .catch(err => {
 
             })
@@ -289,7 +289,7 @@ export default {
     getQuotationByUser () {
       axios({
         method: 'get',
-        url: 'http://localhost:3002/api/v1/quotation/quote/' + this.$store.getters.getShoppingCart.UserId,
+        url: 'https://8f466630.ngrok.io/api/v1/quotation/quote/' + this.$store.getters.getShoppingCart.UserId,
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }
@@ -309,7 +309,7 @@ export default {
         if (admin) {
             axios({
                 method: 'get',
-                url: 'http://localhost:3002/api/v1/quotation/new',
+                url: 'https://8f466630.ngrok.io/api/v1/quotation/new',
                 headers: {
                 'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
                 }
@@ -329,7 +329,7 @@ export default {
             console.log('shit pa')
             axios({
                 method: 'get',
-                url: 'http://localhost:3002/api/v1/quotation/quote/' + localStorage.getItem('UserId'),
+                url: 'https://8f466630.ngrok.io/api/v1/quotation/quote/' + localStorage.getItem('UserId'),
                 headers: {
                     'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
                 }

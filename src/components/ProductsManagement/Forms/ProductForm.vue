@@ -262,7 +262,7 @@ export default {
           this.categories = response.data.items
           axios({
             method: 'get',
-            url: 'httpsss://api.fixer.io/latest'
+            url: 'https://api.fixer.io/latest'
           })
           .then(response =>{
             var rates = response.data.rates
