@@ -234,7 +234,7 @@ export default {
       } else {
         const formData = new FormData()
         formData.set('uploaddata', data[0])
-        axios.post('http://1510ec71.ngrok.io/api/v1/upload', formData)
+        axios.post('httpss://1510ec71.ngrok.io/api/v1/upload', formData)
           .then(response => {
             this.Images.push(response.data.model)
           })
@@ -249,7 +249,7 @@ export default {
     refreshAll () {
       axios({
         method: 'get',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/category',
+        url: 'httpss://5ab1b8cd.ngrok.io/api/v1/category',
         params: {
           Context: localStorage.getItem('Context')
         },
@@ -262,7 +262,7 @@ export default {
           this.categories = response.data.items
           axios({
             method: 'get',
-            url: 'https://api.fixer.io/latest'
+            url: 'httpsss://api.fixer.io/latest'
           })
           .then(response =>{
             var rates = response.data.rates
@@ -298,7 +298,7 @@ export default {
         if ( this._id === null || this._id === undefined) {
           axios({
             method: 'post',
-            url: 'http://5ab1b8cd.ngrok.io/api/v1/products',
+            url: 'httpss://5ab1b8cd.ngrok.io/api/v1/products',
             data: this.Data,
             headers: {
             Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
@@ -324,7 +324,7 @@ export default {
           this.Data['_id'] = this._id
           axios({
             method: 'put',
-            url: 'http://5ab1b8cd.ngrok.io/api/v1/products',
+            url: 'httpss://5ab1b8cd.ngrok.io/api/v1/products',
             data: this.Data,
             headers: {
             Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
@@ -359,7 +359,7 @@ export default {
     setBrandInformationListing () {
       axios({
         method: 'get',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/products',
+        url: 'httpss://5ab1b8cd.ngrok.io/api/v1/products',
         params: {
            Context: localStorage.getItem('Context'),
            limit: 100
@@ -496,7 +496,7 @@ export default {
       if (value !== null || value !== undefined) {
         axios({
           method: 'get',
-          url: 'http://5ab1b8cd.ngrok.io/api/v1/products/' + value,
+          url: 'httpss://5ab1b8cd.ngrok.io/api/v1/products/' + value,
           params: {
             Context: localStorage.getItem('Context')
           }
@@ -549,7 +549,7 @@ export default {
       this.SpecificationItem = []
       axios({
         method: 'get',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/specification/' + value,
+        url: 'httpss://5ab1b8cd.ngrok.io/api/v1/specification/' + value,
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
         }

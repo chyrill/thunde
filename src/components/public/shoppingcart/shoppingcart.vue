@@ -38,7 +38,7 @@
                             <v-card style="height:400px">
                                 <v-layout>
                                     <v-flex>
-                                         <img src="http://localhost:4000/uploads/shopping_cart-1517184384368.png" style="height:200px" />
+                                         <img src="https://localhost:4000/uploads/shopping_cart-1517184384368.png" style="height:200px" />
                                     </v-flex>
                                 </v-layout>
                                 <v-card-title>
@@ -53,7 +53,7 @@
                             <v-card style="height:400px">
                                 <v-layout>
                                     <v-flex>
-                                         <img src="http://localhost:4000/uploads/quote-1517184907856.png" style="height:200px" />
+                                         <img src="https://localhost:4000/uploads/quote-1517184907856.png" style="height:200px" />
                                     </v-flex>
                                 </v-layout>
                                 <v-card-title>
@@ -68,7 +68,7 @@
                             <v-card style="height:400px">
                                 <v-layout>
                                     <v-flex>
-                                         <img src="http://localhost:4000/uploads/payment-512-1517186086810.png" style="height:200px" />
+                                         <img src="https://localhost:4000/uploads/payment-512-1517186086810.png" style="height:200px" />
                                     </v-flex>
                                 </v-layout>
                                 <v-card-title>
@@ -83,7 +83,7 @@
                             <v-card style="height:400px">
                                 <v-layout>
                                     <v-flex>
-                                         <img src="http://localhost:4000/uploads/Express_Shipping-512-1517186199983.png" style="height:200px" />
+                                         <img src="https://localhost:4000/uploads/Express_Shipping-512-1517186199983.png" style="height:200px" />
                                     </v-flex>
                                 </v-layout>
                                 <v-card-title>

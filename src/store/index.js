@@ -31,7 +31,7 @@ export const store = new Vuex.Store({
       }
       axios({
           method: 'get',
-          url: 'http://8f466630.ngrok.io/api/v1/shoppingcart/' + payload.UserId
+          url: 'https://8f466630.ngrok.io/api/v1/shoppingcart/' + payload.UserId
         })
         .then(response => {
           state.shoppingCart = response.data.model
@@ -39,7 +39,7 @@ export const store = new Vuex.Store({
         .catch(err => {
           axios({
               method: 'post',
-              url: 'http://8f466630.ngrok.io/api/v1/shoppingcart/',
+              url: 'https://8f466630.ngrok.io/api/v1/shoppingcart/',
               data: state.shoppingCart
             })
             .then(response => {
@@ -78,7 +78,7 @@ export const store = new Vuex.Store({
 
         axios({
             method: 'put',
-            url: 'http://8f466630.ngrok.io/api/v1/shoppingcart',
+            url: 'https://8f466630.ngrok.io/api/v1/shoppingcart',
             data: state.shoppingCart
           })
           .then(response => {
@@ -107,7 +107,7 @@ export const store = new Vuex.Store({
       if (state.shoppingCart._id != null || state.shoppingCart._id != undefined) {
         axios({
             method: 'put',
-            url: 'http://8f466630.ngrok.io/api/v1/shoppingcart/',
+            url: 'https://8f466630.ngrok.io/api/v1/shoppingcart/',
             data: state.shoppingCart
           })
           .then(response => {
@@ -120,7 +120,7 @@ export const store = new Vuex.Store({
     requestForQoute(state) {
       axios({
           method: 'post',
-          url: 'http://8f466630.ngrok.io/api/v1/quotation',
+          url: 'https://8f466630.ngrok.io/api/v1/quotation',
           data: {
             ShoppingCartId: state.shoppingCart._id,
             Customer: state.user
@@ -135,7 +135,7 @@ export const store = new Vuex.Store({
           state.shoppingCart.CreatedBy = state.user.Name
           axios({
               method: 'post',
-              url: 'http://8f466630.ngrok.io/api/v1/shoppingcart/',
+              url: 'https://8f466630.ngrok.io/api/v1/shoppingcart/',
               data: state.shoppingCart
             })
             .then(response => {

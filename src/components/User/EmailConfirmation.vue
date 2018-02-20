@@ -14,7 +14,7 @@
             }
         },
         mounted () {
-            axios.post('http://d4cebfbf.ngrok.io/api/v1/UserLogin/'+ this.$route.params.id)
+            axios.post('https://d4cebfbf.ngrok.io/api/v1/UserLogin/'+ this.$route.params.id)
                 .then(response => {
                     localStorage.setItem('Token', response.data.model)
                     this.$store.dispatch('jwtdecode', response.data.model)

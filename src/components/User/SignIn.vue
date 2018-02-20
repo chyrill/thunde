@@ -65,7 +65,7 @@ export default {
   methods: {
     submit (value) {
       value['Context'] = this.$store.getters.getContext
-      axios.post('http://d4cebfbf.ngrok.io/api/v1/userLogin/login',value)
+      axios.post('https://d4cebfbf.ngrok.io/api/v1/userLogin/login',value)
         .then( response => {
              this.$store.dispatch('signInjwtdecode', response.data.model.Token)
 

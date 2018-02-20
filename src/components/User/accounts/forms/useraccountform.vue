@@ -179,7 +179,7 @@
         else {
           const formData = new FormData()
           formData.set('uploaddata',data[0])
-          axios.post('http://localhost:4000/api/v1/upload', formData)
+          axios.post('https://localhost:4000/api/v1/upload', formData)
             .then(response => {
               this.ProfilePicture = response.data.model
               this.withPicture = true

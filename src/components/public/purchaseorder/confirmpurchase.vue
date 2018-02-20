@@ -41,7 +41,7 @@ export default {
         getQuotationItem () {
             axios({
                 method: 'get',
-                url: 'http://8f466630.ngrok.io/api/v1/quote/' + this.$route.params.id,
+                url: 'https://8f466630.ngrok.io/api/v1/quote/' + this.$route.params.id,
                 headers: {
                     'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
                 }
@@ -81,7 +81,7 @@ export default {
         createPurchase (payload) {
            axios({
                 method: 'post',
-                url: 'http://5ab1b8cd.ngrok.io/api/v1/purchaseorder',
+                url: 'https://5ab1b8cd.ngrok.io/api/v1/purchaseorder',
                 data: payload,
                 headers: {
                     'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
@@ -101,7 +101,7 @@ export default {
             this.QuotationItem.Status = 'Approved'
             axios({
                 method: 'put',
-                url: 'http://8f466630.ngrok.io/api/v1/QuotationItem',
+                url: 'https://8f466630.ngrok.io/api/v1/QuotationItem',
                 data: this.QuotationItem,
                 headers: {
                     'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')

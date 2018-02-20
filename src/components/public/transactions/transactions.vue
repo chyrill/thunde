@@ -82,7 +82,7 @@
 
 				axios({
 					method: 'get',
-					url: 'http://5ab1b8cd.ngrok.io/api/v1/purchaseorder',
+					url: 'https://5ab1b8cd.ngrok.io/api/v1/purchaseorder',
 					params: {
 						Filters: 'UserId:/' + user.UserId + '/',
 						sort: '-DateCreated'

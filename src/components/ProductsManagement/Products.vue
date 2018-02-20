@@ -363,7 +363,7 @@ export default {
     this.Loading = true
     axios({
       method: 'get',
-      url: 'http://5ab1b8cd.ngrok.io/api/v1/products/',
+      url: 'https://5ab1b8cd.ngrok.io/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 10,
@@ -412,7 +412,7 @@ export default {
       }
       axios({
         method: 'post',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/specification',
+        url: 'https://5ab1b8cd.ngrok.io/api/v1/specification',
         data: valueData,
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
@@ -444,7 +444,7 @@ export default {
       this.Loading = true
       axios({
         method: 'get',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/products/',
+        url: 'https://5ab1b8cd.ngrok.io/api/v1/products/',
         params:{
           skip: this.Skip,
           limit: 10,
@@ -468,7 +468,7 @@ export default {
     SubmitCategory () {
       axios({
         method: 'post',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/category',
+        url: 'https://5ab1b8cd.ngrok.io/api/v1/category',
         data: {Name: this.CategoryName},
         headers: {
             'Authorization' : 'Bearer '+ this.$store.getters.getAuthCode
@@ -508,7 +508,7 @@ export default {
       if (this.Data._id != null || this.Data._id != undefined) {
          axios({
         method: 'put',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/products/',
+        url: 'https://5ab1b8cd.ngrok.io/api/v1/products/',
         data: this.Data,
         headers: {
           'Authorization' : 'Bearer ' + this.$store.getters.getAuthCode
@@ -534,7 +534,7 @@ export default {
       else {
         axios({
         method: 'post',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/products/',
+        url: 'https://5ab1b8cd.ngrok.io/api/v1/products/',
         data: this.Data,
         headers: {
           'Authorization' : 'Bearer ' + this.$store.getters.getAuthCode
@@ -549,7 +549,7 @@ export default {
           this.Snackbar = true
           axios({
             method: 'get',
-            url: 'http://5ab1b8cd.ngrok.io/api/v1/products/',
+            url: 'https://5ab1b8cd.ngrok.io/api/v1/products/',
             params:{
               skip: this.Skip,
               limit: 20,
@@ -584,7 +584,7 @@ export default {
           this.Snackbar = true
           axios({
             method: 'get',
-            url: 'http://5ab1b8cd.ngrok.io/api/v1/products/',
+            url: 'https://5ab1b8cd.ngrok.io/api/v1/products/',
             params:{
               skip: this.Skip,
               limit: 20,
@@ -612,7 +612,7 @@ export default {
       if (this.deleteMode === 1) {
         axios({
         method: 'delete',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/category/' + this.deleteItemId,
+        url: 'https://5ab1b8cd.ngrok.io/api/v1/category/' + this.deleteItemId,
         headers: {
           'Authorization' : 'Bearer '+ this.$store.getters.getAuthCode
         }
@@ -640,7 +640,7 @@ export default {
         console.log('hey')
         axios({
         method: 'delete',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/specification/' + this.deleteItemId,
+        url: 'https://5ab1b8cd.ngrok.io/api/v1/specification/' + this.deleteItemId,
         headers: {
           'Authorization' : 'Bearer '+ this.$store.getters.getAuthCode
         }
@@ -667,7 +667,7 @@ export default {
       else {
         axios({
         method: 'delete',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/products/' + this.deleteItemId,
+        url: 'https://5ab1b8cd.ngrok.io/api/v1/products/' + this.deleteItemId,
         headers: {
           'Authorization' : 'Bearer '+ this.$store.getters.getAuthCode
         }
@@ -696,7 +696,7 @@ export default {
     refresh () {
       axios({
         method: 'get',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/products/',
+        url: 'https://5ab1b8cd.ngrok.io/api/v1/products/',
         params:{
           skip: this.Skip,
           limit: 20,
@@ -740,7 +740,7 @@ export default {
     refreshAllItems () {
       axios({
         method: 'get',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/category',
+        url: 'https://5ab1b8cd.ngrok.io/api/v1/category',
         params: {
           Context: localStorage.getItem('Context')
         },
@@ -756,7 +756,7 @@ export default {
         })
       axios({
         method: 'get',
-        url: 'http://5ab1b8cd.ngrok.io/api/v1/specification',
+        url: 'https://5ab1b8cd.ngrok.io/api/v1/specification',
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
         }
@@ -770,7 +770,7 @@ export default {
         })
         axios({
           method: 'get',
-          url: 'http://5ab1b8cd.ngrok.io/api/v1/products/',
+          url: 'https://5ab1b8cd.ngrok.io/api/v1/products/',
           params:{
             skip: this.Skip,
             limit: 20,

@@ -79,7 +79,7 @@
       refreshAll () {
         axios({
           method: 'get',
-          url: 'http://d4cebfbf.ngrok.io/api/v1/userInfo',
+          url: 'https://d4cebfbf.ngrok.io/api/v1/userInfo',
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
           }

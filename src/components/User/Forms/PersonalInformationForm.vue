@@ -5,7 +5,7 @@
       <v-container grid-list-xs text-xs-center>
         <v-flex xs10 offset-xs1>
           <div v-if="!withPicture">
-            <img src="http://d5b38b09.ngrok.io/uploads/customer-512-1514938254632.png" style="width:200px;height:200px;border-radius:50%" />
+            <img src="https://d5b38b09.ngrok.io/uploads/customer-512-1514938254632.png" style="width:200px;height:200px;border-radius:50%" />
           </div>
           <div v-else>
             <img :src="ProfilePicture" style="width:200px;height:200px;border-radius:50%" />
@@ -169,19 +169,19 @@ export default {
     window.addEventListener('resize', this.HandleResize)
   },
   mounted () {
-    axios.get('http://1510ec71.ngrok.io/api/v1/city')
+    axios.get('https://1510ec71.ngrok.io/api/v1/city')
       .then(response => {
         for (let item in response.data.items){
             this.Cities.push(response.data.items[item].Name)
         }
     })
-    axios.get('http://1510ec71.ngrok.io/api/v1/state')
+    axios.get('https://1510ec71.ngrok.io/api/v1/state')
       .then(response => {
         for (let item in response.data.items) {
             this.States.push(response.data.items[item].Name)
         }
     })
-    axios.get('http://1510ec71.ngrok.io/api/v1/country')
+    axios.get('https://1510ec71.ngrok.io/api/v1/country')
       .then(response => {
         for (let item in response.data.items) {
             this.Countries.push(response.data.items[item].Name)
@@ -283,7 +283,7 @@ export default {
       else {
         const formData = new FormData()
         formData.set('uploaddata',data[0])
-        axios.post('http://1510ec71.ngrok.io/api/v1/upload', formData)
+        axios.post('httpss://1510ec71.ngrok.io/api/v1/upload', formData)
           .then(response => {
             this.ProfilePicture = response.data.model
             this.withPicture = true
