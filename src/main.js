@@ -6,7 +6,6 @@ import App from './App'
 import { store } from './store'
 import router from './router'
 import ('../node_modules/vuetify/dist/vuetify.min.css')
-import App2 from './App2'
 
 Vue.use(Vuetify, {
   theme: {
