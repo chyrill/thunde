@@ -102,6 +102,5 @@ export default new Router({
     //   path: 'decline/:id',
     //   component: DeclinePurchase
     // }
-  ],
-  mode: 'history'
+  ]
 })
