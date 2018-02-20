@@ -283,7 +283,7 @@ export default {
       else {
         const formData = new FormData()
         formData.set('uploaddata',data[0])
-        axios.post('httpss://1510ec71.ngrok.io/api/v1/upload', formData)
+        axios.post('https://1510ec71.ngrok.io/api/v1/upload', formData)
           .then(response => {
             this.ProfilePicture = response.data.model
             this.withPicture = true

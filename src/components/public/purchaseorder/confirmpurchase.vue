@@ -29,7 +29,7 @@ export default {
             QuotationItem: {},
             Color: '',
             Message: '',
-            Actions: '',
+            Actions: ''
         }    
     },
     mounted () {
