@@ -101,21 +101,21 @@
 			getPaymentList () {
 				var user = this.$store.getters.getUser
 
-				axios({
-					method: 'get',
-					url: '',
-					data: ,
-					params: ,
-					headers: {
-						'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
-					}
-				})
-				.then(response => {
+				// axios({
+				// 	method: 'get',
+				// 	url: '',
+				// 	data: ,
+				// 	params: ,
+				// 	headers: {
+				// 		'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+				// 	}
+				// })
+				// .then(response => {
 					
-				})
-				.catch(err => {
+				// })
+				// .catch(err => {
 					
-				})
+				// })
 			}
  		},
 		computed: {
