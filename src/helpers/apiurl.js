@@ -1,11 +1,11 @@
-export const userUrl = 'https://5f9b92d5.ngrok.io';
+export const userUrl = 'https://d7b37e0a.ngrok.io';
 
-export const productUrl = 'https://bf69915b.ngrok.io';
+export const productUrl = 'https://d4e65bce.ngrok.io';
 
-export const transactionUrl = 'https://f79c11b2.ngrok.io';
+export const transactionUrl = 'https://0ee94638.ngrok.io';
 
-export const notificationUrl = 'https://6c67185c.ngrok.io';
+export const notificationUrl = 'https://e7034742.ngrok.io';
 
-export const resourceUrl = 'https://467807b1.ngrok.io';
+export const resourceUrl = 'https://57a083f1.ngrok.io';
 
-export const leadUrl = 'https://b2726e17.ngrok.io';
+export const leadUrl = 'https://4b34edbc.ngrok.io';

@@ -5,7 +5,7 @@
       <v-container grid-list-xs text-xs-center>
         <v-flex xs10 offset-xs1>
           <div v-if="!withPicture">
-            <img src="https://d5b38b09.ngrok.io/uploads/customer-512-1514938254632.png" style="width:200px;height:200px;border-radius:50%" />
+            <img src="https://57a083f1.ngrok.io/uploads/customer-512-1517448828612.png" style="width:200px;height:200px;border-radius:50%" />
           </div>
           <div v-else>
             <img :src="ProfilePicture" style="width:200px;height:200px;border-radius:50%" />
