@@ -86,6 +86,7 @@
 <script>
 import axios from 'axios'
 import ProductView from '../../ProductsManagement/Forms/ProductView'
+import { productUrl } from '../../../helpers/apiurl'
 
 export default {
   data () {
@@ -124,7 +125,7 @@ export default {
     this.Loading = true
     axios({
       method: 'get',
-      url: 'https://5ab1b8cd.ngrok.io/api/v1/products/',
+      url: productUrl + '/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 20,
@@ -158,7 +159,7 @@ export default {
     searchMoreFilter () {
       axios({
       method: 'get',
-      url: 'https://5ab1b8cd.ngrok.io/api/v1/products/',
+      url: productUrl + '/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 20,
@@ -198,7 +199,7 @@ export default {
      this.specification = []
      axios({
       method: 'get',
-      url: 'https://5ab1b8cd.ngrok.io/api/v1/products/',
+      url: productUrl + '/api/v1/products/',
       params:{
         skip: this.Skip,
         limit: 20,
@@ -233,7 +234,7 @@ export default {
     addToShoppingCart () {
       axios({
         method: 'get',
-        url: 'https://5ab1b8cd.ngrok.io/api/v1/products/' + this.addItemId,
+        url: productUrl + '/api/v1/products/' + this.addItemId,
         params: {
           Context: localStorage.getItem('Context')
         }
@@ -257,7 +258,7 @@ export default {
     refreshAll () {
       axios({
         method: 'get',
-        url: 'https://5ab1b8cd.ngrok.io/api/v1/category',
+        url: productUrl + '/api/v1/category',
         params: {
           Context: localStorage.getItem('Context')
         },

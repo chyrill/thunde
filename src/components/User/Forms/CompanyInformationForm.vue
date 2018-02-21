@@ -70,7 +70,9 @@ import {
 } from 'vuelidate/lib/validators'
 
 import axios from 'axios'    
-    
+
+import { resourceUrl } from '../../../helpers/apiurl'
+
 export default {
   mixins: [validationMixin],
   validations: {
@@ -136,19 +138,19 @@ export default {
     window.addEventListener('resize', this.handleResize)
   },
   mounted () {
-    axios.get('https://1510ec71.ngrok.io/api/v1/city')
+    axios.get(resourceUrl + '/api/v1/city')
       .then(response => {
         for (let item in response.data.items){
             this.Cities.push(response.data.items[item].Name)
         }
     })
-    axios.get('https://1510ec71.ngrok.io/api/v1/state')
+    axios.get(resourceUrl + '/api/v1/state')
       .then(response => {
         for (let item in response.data.items) {
             this.States.push(response.data.items[item].Name)
         }
     })
-    axios.get('https://1510ec71.ngrok.io/api/v1/country')
+    axios.get(resourceUrl + '/api/v1/country')
       .then(response => {
         for (let item in response.data.items) {
             this.Countries.push(response.data.items[item].Name)

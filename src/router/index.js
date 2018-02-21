@@ -13,8 +13,9 @@ import UserAccounts from '@/components/User/accounts/useraccount'
 import LogOut from '@/components/logout'
 import MyTransaction from '@/components/public/transactions/transactions'
 import DeclinePurchase from '@/components/public/purchaseorder/declinepurchase'
-// import ConfirmPurchase from '@/components/public/purchaseorder/confirmpurchase'
-
+import ConfirmPurchase from '@/components/public/purchaseorder/confirmpurchase'
+import PurchaseOrder from '@/components/ProductsManagement/purchaseorder'
+import PaymentList from '@/components/TransactionManagement/payments'
 Vue.use(Router)
 
 export default new Router({
@@ -95,12 +96,27 @@ export default new Router({
       path: '/transactions',
       component: MyTransaction
     },
-    // {
-    //   path: 'purchase/:id',
-    //   component: ConfirmPurchase
-    // }, {
-    //   path: 'decline/:id',
-    //   component: DeclinePurchase
-    // }
+    {
+      path: '/purchase/:id',
+      name: 'ConfirmPurchase',
+      component: ConfirmPurchase
+    }, {
+      path: '/decline/:id',
+      component: DeclinePurchase
+    },
+    {
+      path: '/admin/purchaseorder',
+      component: PurchaseOrder,
+      meta: {
+        forAdmin: true
+      }
+    },
+    {
+      path: '/admin/payments',
+      component: PaymentList,
+      meta: {
+        forAdmin: true
+      }
+    }
   ]
 })

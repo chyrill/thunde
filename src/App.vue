@@ -166,7 +166,7 @@
 <script>
 import Uuid from 'uuid-lib'
 import axios from 'axios'
-
+import { resourceUrl, transactionUrl } from './helpers/apiurl'
 export default {
   name: 'app',
   data() {
@@ -184,7 +184,8 @@ export default {
             title: 'Product Management',
             active: false,
             items: [
-              { title: 'Products', href: '/admin/product', action: 'list', method: '' }
+              { title: 'Products', href: '/admin/product', action: 'list', method: '' },
+              { title: 'Purchase Orders', href: '/admin/purchaseorder', action: 'receipt', method: ''}
             ]
           },
           {
@@ -192,7 +193,8 @@ export default {
             title: 'Transaction Management',
             active: false,
             items: [
-              { title: 'Quotation', href: '/admin/quotation', action: 'attach_money', method: '' }
+              { title: 'Quotation', href: '/admin/quotation', action: 'receipt', method: '' },
+              { title: 'Payments', href: '/admin/payments', action: 'attach_money', method: ''}
             ]
           },
           {
@@ -232,15 +234,15 @@ export default {
     this.$store.dispatch('setShoppinCart')
     axios.get('https://ip-api.com/json')
       .then(response =>{
-        axios.post('https://1510ec71.ngrok.io/api/v1/city', { Name: response.data.city })
+        axios.post(resourceUrl + '/api/v1/city', { Name: response.data.city })
             .catch(err => {
 
         })
-        axios.post('https://1510ec71.ngrok.io/api/v1/country', {Name: response.data.country })
+        axios.post(resourceUrl + '/api/v1/country', {Name: response.data.country })
             .catch(err => {
 
             })
-        axios.post('https://1510ec71.ngrok.io/api/v1/state', {Name: response.data.regionName })
+        axios.post(resourceUrl + '/api/v1/state', {Name: response.data.regionName })
             .catch(err => {
 
             })
@@ -288,7 +290,7 @@ export default {
     getQuotationByUser () {
       axios({
         method: 'get',
-        url: 'https://8f466630.ngrok.io/api/v1/quotation/quote/' + this.$store.getters.getShoppingCart.UserId,
+        url: transactionUrl + '/api/v1/quotation/quote/' + this.$store.getters.getShoppingCart.UserId,
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }
@@ -308,7 +310,7 @@ export default {
         if (admin) {
             axios({
                 method: 'get',
-                url: 'https://8f466630.ngrok.io/api/v1/quotation/new',
+                url: transactionUrl + '/api/v1/quotation/new',
                 headers: {
                 'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
                 }
@@ -328,7 +330,7 @@ export default {
             console.log('shit pa')
             axios({
                 method: 'get',
-                url: 'https://8f466630.ngrok.io/api/v1/quotation/quote/' + localStorage.getItem('UserId'),
+                url: transactionUrl + '/api/v1/quotation/quote/' + localStorage.getItem('UserId'),
                 headers: {
                     'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
                 }

@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card :color="" dark>
+        <v-card :color="Color" dark>
             <v-card-title>
                 <v-layout row>
                     <v-flex xs8 offset-xs1>
@@ -21,8 +21,8 @@
 
 <script>
 import axios from 'axios'
+import { productUrl, transactionUrl } from '../../../helpers/apiurl'
 export default {
-    name: 'confirmPurchase',
     data () {
         return {
             PurchaseOrderNumber: '',
@@ -41,14 +41,14 @@ export default {
         getQuotationItem () {
             axios({
                 method: 'get',
-                url: 'https://8f466630.ngrok.io/api/v1/quote/' + this.$route.params.id,
+                url: transactionUrl + '/api/v1/quotation/quote/' + this.$route.params.id,
                 headers: {
                     'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
                 }
             })
             .then (response => {
-                this.QuotationItem = response.data.model
-                this.transformQuotationToPurchase (response.data.model)
+                this.QuotationItem = response.data.items[0]
+                this.transformQuotationToPurchase (response.data.items[0])
             })
             .catch (err => {
                 this.Message = err.response.data.message
@@ -57,11 +57,12 @@ export default {
             })
         },
         transformQuotationToPurchase (quotationItem) {
+            console.log(quotationItem)
             let payload = {
                 CustomerName: quotationItem.Customer.Name,
                 CompanyName: quotationItem.Customer.Others.CompanyName,
                 TotalAmount: quotationItem.TotalQuote,
-                UserId: quotationItem.Customer.UserId,
+                UserId: quotationItem.UserId,
                 Items: []
             }
     
@@ -81,7 +82,7 @@ export default {
         createPurchase (payload) {
            axios({
                 method: 'post',
-                url: 'https://5ab1b8cd.ngrok.io/api/v1/purchaseorder',
+                url: productUrl + '/api/v1/purchaseorder',
                 data: payload,
                 headers: {
                     'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
@@ -101,7 +102,7 @@ export default {
             this.QuotationItem.Status = 'Approved'
             axios({
                 method: 'put',
-                url: 'https://8f466630.ngrok.io/api/v1/QuotationItem',
+                url: transactionUrl + '/api/v1/quotation',
                 data: this.QuotationItem,
                 headers: {
                     'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')

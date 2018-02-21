@@ -18,7 +18,7 @@
 <script>
 import SignInForm from './Forms/SignInForm'
 import axios from 'axios'
-
+import { userUrl } from '../../helpers/apiurl'
 export default {
   name: 'SignIn',
   data () {
@@ -65,7 +65,7 @@ export default {
   methods: {
     submit (value) {
       value['Context'] = this.$store.getters.getContext
-      axios.post('https://d4cebfbf.ngrok.io/api/v1/userLogin/login',value)
+      axios.post(userUrl + '/api/v1/userLogin/login',value)
         .then( response => {
              this.$store.dispatch('signInjwtdecode', response.data.model.Token)
 

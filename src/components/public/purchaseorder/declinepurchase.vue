@@ -22,7 +22,7 @@
 
 <script>
 	import axios from 'axios'
-	
+	import { transactionUrl } from '../../../helpers/apiurl'
 	export default {
 		name: 'DeclinePurchase',
 		data () {
@@ -41,10 +41,10 @@
 		methods: {
 			getQuotationItem () {
 				var id = this.$router.params.id
-
+				
 				axios({
 					method: 'get',
-					url: 'https://8f466630.ngrok.io/api/v1/quotation/' + id,
+					url: transactionUrl + '/api/v1/quotation/quote' + id,
 					headers: {
 						'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
 					}
@@ -59,9 +59,11 @@
 				})
 			},
 			updateQuotationItem () {
+				this.QuotationItem.Status = 'Declined'
+
 				axios({
 					method: 'put',
-					url: 'https://8f466630.ngrok.io/api/v1/quotation',
+					url: transactionUrl + '/api/v1/quotation',
 					data: this.QuotationItem,
 					headers: {
 						'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')

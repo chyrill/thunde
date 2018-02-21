@@ -7,52 +7,36 @@
       <v-card-text>
         <v-data-table v-bind:headers="accountHeaders" :items="userAccounts" hide-actions class="elevation-1">
         <template slot="items" slot-scope="props">
-          <td>{{props.item.LastName}}</td>
-          <td>{{props.item.FirstName}}</td>
+          <td>{{props.item.FullName}}</td>
+          <td>{{props.item.Address}}</td>
           <td>{{props.item.Email}}</td>
+          <td>{{props.item.MobileNumber}}</td>
           <td>{{props.item.DateCreated}}</td>
-          <td>
-            <v-tooltip top>
-              <v-btn slot="activator" flat icon color="yellow"><v-icon>visibility</v-icon></v-btn>
-              <span>view profile</span>
-            </v-tooltip>
-            <v-tooltip top>
-              <v-btn slot="activator" flat icon color="red"><v-icon>delete</v-icon></v-btn>
-              <span>delete profile</span>
-            </v-tooltip>
-          </td>
         </template>
         </v-data-table>
       </v-card-text>
-      <v-btn fab absolute bottom right dark color="red" @click="openAddUserDialog"><v-icon>add</v-icon></v-btn>
     </v-card>
-    <!-- dialog add user  -->
-      <v-dialog v-model="addUserDialog" max-width="700">
-          <UserAccountForm />
-      </v-dialog>
-    <!-- end of add user dialog -->
   </v-container>
 </template>
 
 
 <script>
   import axios from 'axios'
-  import UserAccountForm from './forms/useraccountform'
-
+  import { leadUrl } from '../../../helpers/apiurl'
   export default {
     name: 'UserAccount',
     data () {
       return {
         accountHeaders: [
           {
-            text: 'Last Name',
+            text: 'Name',
             align: 'center',
-            value: 'LastName'
+            value: 'FullName'
           },
           {
-            text: 'First Name',
+            text: 'Address',
             align: 'center',
-            value: 'FirstName'
+            value: 'Address'
           },
           {
             text: 'Email',
@@ -60,12 +44,14 @@
             value: 'Email'
           },
           {
-            text: 'Date Created',
+            text: 'Mobile Number',
             align: 'center',
-            value: 'DateCreated '
+            value: 'MobileNumber '
           },
           {
-            text: ''
+            text: 'Date Joined',
+            align: 'center',
+            value: 'DateCreated'
           }
         ],
       userAccounts: [],
@@ -73,27 +59,27 @@
       }
     },
     methods: {
-      openAddUserDialog () {
-        this.addUserDialog = !this.addUserDialog
-      },
-      refreshAll () {
+      getUsers () {
         axios({
           method: 'get',
-          url: 'https://d4cebfbf.ngrok.io/api/v1/userInfo',
+          url: leadUrl + '/api/v1/client',
+          params: {
+            limit: 1000
+          },
           headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('AuthCode')
+            'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
           }
         })
-          .then(response => {
-            this.userAccounts = response.data.items
-          })
-          .catch(err => {
-
-          })
+        .then(response => {
+          this.userAccounts = response.data.items
+        })
+        .catch(err => {
+          
+        })
       }
     },
     mounted () {
-      this.refreshAll()
+      this.getUsers()
     },
     watch () {
 
@@ -102,7 +88,6 @@
 
     },
     components: {
-      UserAccountForm
     }
   }
 </script>

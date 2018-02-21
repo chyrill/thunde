@@ -189,7 +189,7 @@
 
 <script>
 import axios from 'axios'
-
+import { transactionUrl, notificationUrl } from '../../helpers/apiurl'
 export default {
   data () {
     return {
@@ -290,7 +290,7 @@ export default {
     getQuotation () {
         axios({
             method: 'get',
-            url: 'https://8f466630.ngrok.io/api/v1/quotation',
+            url: transactionUrl + '/api/v1/quotation',
             params: {
                 Filters: 'Status:/new/'   
             },
@@ -304,7 +304,7 @@ export default {
         
         axios({
             method: 'get',
-            url: 'https://8f466630.ngrok.io/api/v1/quotation',
+            url: transactionUrl + '/api/v1/quotation',
             params: {
                 Filters: 'Status:/Quoted/'   
             },
@@ -319,7 +319,7 @@ export default {
         
         axios({
             method: 'get',
-            url: 'https://8f466630.ngrok.io/api/v1/quotation',
+            url: transactionUrl + '/api/v1/quotation',
             params: {
                 Filters: 'Status:/Approved/'   
             },
@@ -345,7 +345,7 @@ export default {
       this.quotationItem['TotalQuote'] = this.totalQuote
       axios({
         method: 'put',
-        url: 'https://8f466630.ngrok.io/api/v1/quotation/quote',
+        url: transactionUrl + '/api/v1/quotation/quote',
         data: this.quotationItem,
         headers: {
           'Authorization' : 'Bearer ' + this.$store.getters.getAuthCode
@@ -376,7 +376,7 @@ export default {
     getQuotationById () {
       axios({
         method: 'get',
-        url: 'https://8f466630.ngrok.io/api/v1/quotation/' + this.editItemId,
+        url: transactionUrl + '/api/v1/quotation/' + this.editItemId,
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }
@@ -404,7 +404,7 @@ export default {
     getCurrency () {
         axios({
           method: 'get',
-          url: 'httpss://api.fixer.io/latest?base=PHP'
+          url: 'https://api.fixer.io/latest?base=PHP'
         })
         .then(response =>{
             this.Currencies = response.data.rates;
@@ -439,16 +439,16 @@ export default {
             quotationItem.Items[item]['SupplierAddress'] = supplierAddress
             quotationItem.Items[item]['Images'] = quotationItem.Items[item].Images[0]
         }
-        
-        var purchaselink = 'httpss://blaise-scientific-trading.netlify.com/purchase/' + quotationItem._id
-        var declinelink = 'httpss://blaise-scientific-trading-app.netlify.com/decline/' + quotationItem._id
+        var id = quotationItem._id + '.' + quotationItem.UserId
+        var purchaselink = 'https://blaise-scientific-trading.netlify.com/#/purchase/' + id
+        var declinelink = 'https://blaise-scientific-trading.netlify.com/#/decline/' + id
         
         quotationItem['PurchaseLink'] = purchaselink;
         quotationItem['DeclineLink'] = declinelink;
         console.log(quotationItem)
         axios({
             method: 'post',
-            url: 'https://2726d92e.ngrok.io/api/v1/notify/sendSimple',
+            url: notificationUrl + '/api/v1/notify/sendSimple',
             data: {
                 Payload: quotationItem,
                 RecipientId: recipientId,

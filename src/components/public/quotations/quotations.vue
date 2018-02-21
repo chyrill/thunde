@@ -105,7 +105,7 @@
 
 <script>
 import axios from 'axios'
-
+import { transactionUrl } from '../../../helpers/apiurl'
 export default{
   data () {
     return {
@@ -148,7 +148,7 @@ export default{
     getQuotation () {
       axios({
         method: 'get',
-        url: 'https://8f466630.ngrok.io/api/v1/quotation/quote/' + localStorage.getItem('UserId'),
+        url: transactionUrl + '/api/v1/quotation/quote/' + localStorage.getItem('UserId'),
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }
@@ -160,7 +160,7 @@ export default{
     getQuotationDetail () {
       axios({
         method: 'get',
-        url: 'https://8f466630.ngrok.io/api/v1/quotation/' + this.quotationId,
+        url: transactionUrl + '/api/v1/quotation/' + this.quotationId,
         headers: {
           'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
         }

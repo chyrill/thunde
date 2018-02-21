@@ -38,6 +38,7 @@ import LoginDetailsForm from './Forms/LoginDetailsForm'
 import PersonalInformationForm from './Forms/PersonalInformationForm'
 import CompanyInformationForm from './Forms/CompanyInformationForm'
 import axios from 'axios'
+import { userUrl, notificationUrl, leadUrl } from '../../helpers/apiurl'
 
 export default {
   name: 'SignUp',
@@ -97,7 +98,7 @@ export default {
     checkIfExist () {
       axios({
           method: 'post',
-          url: 'https://d4cebfbf.ngrok.io/api/v1/userInfo/exist',
+          url: userUrl + '/api/v1/userInfo/exist',
           data: {
             Context: this.Data.Context,
             Email: this.Data.Email,
@@ -118,7 +119,7 @@ export default {
     createRecipient () {
       axios({
           method: 'post',
-          url: 'https://2726d92e.ngrok.io/api/v1/recipient',
+          url: notificationUrl + '/api/v1/recipient',
           data: {
               Name: this.Data.LastName + ', ' + this.Data.FirstName,
               Context: this.Data.Context,
@@ -137,7 +138,7 @@ export default {
         var payload = this.Data
         axios({
             method: 'post',
-            url: 'https://d4cebfbf.ngrok.io/api/v1/userLogin/signup',
+            url: userUrl + '/api/v1/userLogin/signup',
             data: this.Data,
         })
         .then (response => {
@@ -156,11 +157,11 @@ export default {
     sendEmailVerification (user, loginId) {
        axios({
            method: 'post',
-           url: 'https://2726d92e.ngrok.io/api/v1/notify/sendSimple',
+           url: notificationUrl + '/api/v1/notify/sendSimple',
            data: {
                NotificationTemplateId: '5a6fce0237bb14714ca1373c',
                Payload: {
-                   Link: 'httpss://blaise-scientific-trading.netlify.com/confirmemail/' + loginId,
+                   Link: 'https://blaise-scientific-trading.netlify.com/#/confirmemail/' + loginId,
                    Name: this.Data.LastName + ', ' + this.Data.FirstName
                },
                RecipientId: user.ContactId
@@ -187,7 +188,7 @@ export default {
 
       axios({
         method: 'post',
-        url: 'https://c54d8915.ngrok.io/api/v1/client',
+        url: leadUrl + '/api/v1/client',
         data: payload
       })
       .then(response => {

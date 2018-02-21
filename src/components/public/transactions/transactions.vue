@@ -25,12 +25,17 @@
 			<v-flex xs10 offset-xs1>
 				<v-card>
 					<v-toolbar color="primary" dark extended>
-						<v-toolbar-title>My Payments</v-toolbar-title>
-						<v-btn fab absolute color="error" @click="" dark><v-icon>plus</v-icon></v-btn>
+						<v-toolbar-title slot="extension">My Payments</v-toolbar-title>
+						<v-btn fab absolute bottom right color="error" @click="addPaymentDialog=!addPaymentDialog" dark><v-icon>add</v-icon></v-btn>
 					</v-toolbar>
 					<v-card-text>
-						<v-data-table v-bind:headers="PaymentHeaders" :items="PaymentList" hide-actions class="elevation-1">
+						<v-data-table v-bind:headers="PaymentListHeaders" :items="PaymentList" hide-actions class="elevation-1">
 							<template slot="items" slot-scope="props">
+								<td>{{props.item.PaymentNo}}</td>
+								<td>{{props.item.PaymentType}}</td>
+								<td>{{props.item.Verified ? 'Verified': 'Not Verified'}}</td>
+								<td>{{props.item.Amount}}</td>
+								<td>{{props.item.DateCreated}}</td>
 							</template>
 						</v-data-table>
 					</v-card-text>
@@ -38,12 +43,20 @@
 			</v-flex>
 			<!-- end of payment table -->
 		</v-layout>
+		<!-- dialog box for payment -->
+		<v-dialog v-model="addPaymentDialog" max-width="800px">
+			<AddPaymentForm @close="addPaymentDialog=!addPaymentDialog"/>
+		</v-dialog>
+		<!-- end dialog -->
 	</v-container>
 </template>
 
 
 <script>
 	import axios from 'axios'
+	import { productUrl, transactionUrl } from '../../../helpers/apiurl'
+	import AddPaymentForm from './form/addpayment'
+
 	export default {
 		name: 'MyTransactions',
 		data () {
@@ -73,19 +86,48 @@
 						text: ''
 					}
 				],
-				PurchaseOrderList: []
+				PurchaseOrderList: [],
+				PaymentList: [],
+				PaymentListHeaders: [
+					{
+						text: 'Payment Number',
+						align: 'center',
+						value: 'PaymentNo'
+					},
+					{
+						text: 'Payment Type',
+						align: 'center',
+						value: 'PaymentType'
+					},
+					{
+						text: 'Status',
+						align: 'center',
+						value: 'Status'
+					},
+					{
+						text: 'Amount',
+						align: 'center',
+						value: 'Amount'
+					}, 
+					{
+						text: 'Payment Date',
+						align: 'center',
+						value: 'DateCreated'
+					}
+				],
+				addPaymentDialog: false
 			}
 		},
 		methods: {
 			getPuchaserOrderList () {
-				var user = this.$store.getters.getUser
+				var userId = localStorage.getItem('UserId') 
 
 				axios({
 					method: 'get',
-					url: 'https://5ab1b8cd.ngrok.io/api/v1/purchaseorder',
+					url: productUrl + '/api/v1/purchaseorder',
 					params: {
-						Filters: 'UserId:/' + user.UserId + '/',
-						sort: '-DateCreated'
+						Filters: 'UserId:/' + userId + '/',
+						sort: 'DateCreated:' + '-1'
 					},
 					headers: {
 						'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
@@ -99,23 +141,25 @@
 				})
 			},
 			getPaymentList () {
-				var user = this.$store.getters.getUser
+				var userId = localStorage.getItem('UserId') 
 
-				// axios({
-				// 	method: 'get',
-				// 	url: '',
-				// 	data: ,
-				// 	params: ,
-				// 	headers: {
-				// 		'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
-				// 	}
-				// })
-				// .then(response => {
+				axios({
+					method: 'get',
+					url: transactionUrl + '/api/v1/payment',
+					params: {
+						Filters: 'UserId:/' + userId + '/',
+						sort: 'DateCreated:' + '-1'
+					},
+					headers: {
+						'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+					}
+				})
+				.then(response => {
+					this.PaymentList = response.data.items
+				})
+				.catch(err => {
 					
-				// })
-				// .catch(err => {
-					
-				// })
+				})
 			}
  		},
 		computed: {
@@ -123,6 +167,10 @@
 		},
 		mounted () {
 			this.getPuchaserOrderList()
+			this.getPaymentList()
+		},
+		components: {
+			AddPaymentForm
 		}
 	}
 </script>

@@ -103,7 +103,7 @@
 
 <script>
 import axios from 'axios'
-
+import { productUrl } from '../../../helpers/apiurl'
 export default {
   name: 'ProductView',
   props: ['id'],
@@ -122,7 +122,7 @@ export default {
     changeId (value) {
      axios({
       method: 'get',
-      url: 'http://5ab1b8cd.ngrok.io/api/v1/products/' + this.id,
+      url: productUrl + '/api/v1/products/' + this.id,
       params: {
         Context: localStorage.getItem('Context')
       }
@@ -136,7 +136,7 @@ export default {
   mounted () {
     axios({
       method: 'get',
-      url: 'http://5ab1b8cd.ngrok.io/api/v1/products/' + this.id,
+      url: productUrl + '/api/v1/products/' + this.id,
       params: {
         Context: localStorage.getItem('Context')
       }
