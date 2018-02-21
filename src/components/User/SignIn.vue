@@ -49,7 +49,7 @@ export default {
   watch: {
     User (value) {
       if (value.AccessLevel !== 4) {
-        this.$router.push('/admin/dashboard')
+        this.$router.push('/admin/product')
       }
       else {
         this.$router.push('/')

@@ -38,8 +38,45 @@
           </v-card-text>
         </v-card>
       </v-flex>
-      <v-flex xs4 offset-xs4 id="product">
+      <v-flex xs6 offset-xs3 id="product">
         <h1>Featured Products</h1>
+      </v-flex>
+      <v-flex xs4 v-for="product in Products" style="padding-bottom: 80px;">
+        <v-card hover>
+          <v-card-media :src="product.Images[0]" height="200px">
+          </v-card-media>
+          <v-card-title primary-title>
+            <h3>{{product.Name}}</h3>
+          </v-card-title>
+        </v-card>
+      </v-flex>
+      <v-flex xs12>
+        <v-footer height="auto">
+          <v-card flat tile color="primary" dark max-width="100%" style="width:100%">
+            <v-card-title>
+              <h1><strong class="subheading">Get Connected</strong></h1>
+              <v-spacer></v-spacer>
+              <p>&copy {{new Date().getFullYear()}}</p>
+            </v-card-title>
+            <v-card-text>
+              <v-flex xs3 layout column>
+                <span style="padding-bottom: 30px">CONTACT</span>
+                <div style="padding-bottom: 30px">
+                  <v-icon size="20px" class="mr-3">home</v-icon>
+                  94 Calaca St. NPC Village, Brgy. Sauyo
+                </div>
+                <div style="padding-bottom: 30px">
+                  <v-icon size="20px" class="mr-3">email</v-icon>
+                  blaisescientifictrading@gmail.com
+                </div>
+                 <div style="padding-bottom: 30px">
+                  <v-icon size="20px" class="mr-3">phone</v-icon>
+                  (02) 287-6743
+                </div>
+              </v-flex>
+            </v-card-text>
+          </v-card>
+        </v-footer>
       </v-flex>
 		</v-layout>
 	</v-container>
@@ -66,7 +103,7 @@ export default {
   			url: productUrl + '/api/v1/products',
   			params: {
   				Context: localStorage.getItem('Context'),
-  				limit: 4
+  				limit: 3
   			},
   			headers: {
   				'Authorization' : 'Bearer ' + localStorage.getItem('Context')
