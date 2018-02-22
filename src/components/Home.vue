@@ -2,7 +2,7 @@
 	<v-container fluid grid-list-md>
 		<v-layout wrap>
 			<v-flex xs12>
-				<v-parallax src="https://57a083f1.ngrok.io/uploads/water_cover1.jpg" style="height:500px">
+				<v-parallax src="https://2f0afc57.ngrok.io/uploads/water_cover1.jpg" style="height:500px">
 					<v-layout column align-center justify-center>
 						<h1 style="color:black">Blaise Scientific Trading</h1>
 						<v-btn color="success" to="/products">Shop now</v-btn>
