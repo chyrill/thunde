@@ -64,7 +64,7 @@ export default {
 	data () {
 		return {
 			PurchaseOrderList: [],
-			PaymentMethods: ['Bank Deposit - BPI', 'Bank Deposit - BDO', 'Bank Deposit - Robinsons', 'Bank Deposit - Metrobank', 'Bank Deposit - Others'],
+			PaymentMethods: ['Bank Deposit - BPI', 'Bank Deposit - BDO', 'Bank Deposit - Robinsons', 'Bank Deposit - Metrobank', 'Bank Deposit - Others', 'Check-Pick Up'],
 			isLoading: false,
 			UserInfo: {},
 			PaymentType: '',

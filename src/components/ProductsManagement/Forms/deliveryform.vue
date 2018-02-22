@@ -3,10 +3,11 @@
 		<v-toolbar color="primary" dark>
 			<v-toolbar-title>Add Delivery Information</v-toolbar-title>
 		</v-toolbar>
+		<v-progress-linear :indeterminate="isLoading" color="orange" v-if="isLoading"></v-progress-linear>
 		<v-card-text>
 			<v-layout row wrap>
 				<v-flex xs10 offset-xs1>
-					<v-text-field label="Delivery Reciept Number" />
+					<v-text-field label="Delivery Reciept Number" v-model="DeliveryReceiptId"/>
 				</v-flex>
 				<v-flex xs4 offset-xs7 offset-xs1>
 					<v-dialog
@@ -21,7 +22,7 @@
 						<v-date-picker v-model="DateDelivered" scrollable>
 					        <v-spacer></v-spacer>
 				          	<v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
-					        <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
+					        <v-btn flat color="primary" @click="$refs.dialog.save(DateDelivered)">OK</v-btn>
 				        </v-date-picker>
 				    </v-dialog>
 				</v-flex>
@@ -46,6 +47,11 @@
 				</v-container>
 			</v-layout>
 		</v-card-text>
+		<v-card-actions>
+			<v-spacer></v-spacer>
+			<v-btn color="primary" :disabled="isLoading" flat>submit</v-btn>
+			<v-btn color="error" :disabled="isLoading" flat>close</v-btn>
+		</v-card-actions>
 	</v-card>
 </template>
 
@@ -57,10 +63,12 @@
 		name: '',
 		data () {
 			return {
+				DeliveryReceiptId: '',
 				DateDelivered: '',
 				modal: false,
 				Items: [],
-				ProductList: []
+				ProductList: [],
+				isLoading: false
 			}
 		},
 		mounted () {
@@ -118,6 +126,9 @@
 				item.Name = product[0].Name
 
 				console.log(this.Items)
+			},
+			submit () {
+
 			}
 		}
 	}
