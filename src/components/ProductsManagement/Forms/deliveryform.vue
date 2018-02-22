@@ -49,9 +49,13 @@
 		</v-card-text>
 		<v-card-actions>
 			<v-spacer></v-spacer>
-			<v-btn color="primary" :disabled="isLoading" flat>submit</v-btn>
+			<v-btn color="primary" :disabled="isLoading" @click="submit" flat>submit</v-btn>
 			<v-btn color="error" :disabled="isLoading" flat>close</v-btn>
 		</v-card-actions>
+		<v-snackbar :timeout="snackbar.Timeout" :color="snackbar.Color" top v-model="Snackbar">
+		    {{ snackbar.Message }}
+		    <v-btn flat dark @click="Snackbar = !Snackbar">{{snackbar.Actions}}</v-btn>
+		</v-snackbar>
 	</v-card>
 </template>
 
@@ -68,7 +72,14 @@
 				modal: false,
 				Items: [],
 				ProductList: [],
-				isLoading: false
+				isLoading: false,
+				snackbar: {
+					Actions: '',
+					Color: '',
+					Message: '',
+					Timeout: 6000
+				},
+				Snackbar: false
 			}
 		},
 		mounted () {
@@ -124,11 +135,40 @@
 				var item = this.Items[index]
 				var product = this.ProductList.filter(data => { return data._id == item._id })
 				item.Name = product[0].Name
-
-				console.log(this.Items)
 			},
 			submit () {
+				this.isLoading = !this.isLoading
 
+				let payload = {
+					DeliveryReceiptId: this.DeliveryReceiptId,
+					DateDelivered: this.DateDelivered,
+					Items: this.Items
+				}
+
+				axios({
+					method: 'post',
+					url: productUrl + '/api/v1/delivery',
+					data: payload,
+					headers: {
+						'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+					}
+				})
+				.then(response => {
+					this.activateSnackbar('success', response.data.message, 'check')
+					this.isLoading = !this.isLoading
+					this.$emit('close')
+				})
+				.catch(err => {
+					this.activateSnackbar('error', err.response.data.message, 'clear')
+					this.isLoading = !this.isLoading
+				})
+			},
+			activateSnackbar(color, message, action) {
+				this.snackbar.Color = color
+				this.snackbar.Actions = action
+				this.snackbar.Message = message
+
+				this.Snackbar = !this.Snackbar
 			}
 		}
 	}
