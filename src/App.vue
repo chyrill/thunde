@@ -185,7 +185,8 @@ export default {
             active: false,
             items: [
               { title: 'Products', href: '/admin/product', action: 'list', method: '' },
-              { title: 'Purchase Orders', href: '/admin/purchaseorder', action: 'receipt', method: ''}
+              { title: 'Purchase Orders', href: '/admin/purchaseorder', action: 'receipt', method: ''},
+              { title: 'Delivery', href: '/admin/delivery', action: 'move_to_inbox', method: ''}
             ]
           },
           {
@@ -327,7 +328,7 @@ export default {
         if (isAuth === null || isAuth === undefined || !admin) {
         }
         else {
-            console.log('shit pa')
+      
             axios({
                 method: 'get',
                 url: transactionUrl + '/api/v1/quotation/quote/' + localStorage.getItem('UserId'),
@@ -338,8 +339,9 @@ export default {
             .then(response => {
                 if (response.data.totalcount > 0) {
                     this.snackbar.color = 'gray'
+                    this.snackbar.timeout = 10000
                     this.snackbar.actions = 'priority_high'
-                    this.Message = 'There is ' + response.data.totalcount + ' new quoted request' 
+                    this.Message = 'There is ' + response.data.totalcount + ' new quoted request in your email' 
                     this.Snackbar = !this.Snackbar
                 }
             })

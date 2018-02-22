@@ -11,6 +11,7 @@
 							<td>{{props.item.CompanyName}}</td>
 							<td>{{props.item.Status}}</td>
 							<td>{{props.item.TotalAmount}}</td>
+							<td>{{props.item.Balance}}</td>
 							<td>{{props.item.DateCreated}}</td>
 						</template>
 					</v-data-table>
@@ -49,6 +50,11 @@
 						text: 'Amount',
 						align: 'center',
 						value: 'TotalAmount'
+					},
+					{
+						text: 'Balance',
+						align: 'center',
+						value: 'Balance'
 					},
 					{
 						text: 'Date Purchased',

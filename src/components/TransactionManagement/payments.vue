@@ -3,7 +3,7 @@
 		<v-card>
 			<v-toolbar color="primary" dark>
 				<v-toolbar-title>Payments</v-toolbar-title>
-				<v-btn fab absolute bottom right color="error" dark><v-icon>add</v-icon></v-btn>
+				<v-btn fab absolute bottom right color="error" dark @click="addPaymentDialog=!addPaymentDialog"><v-icon>add</v-icon></v-btn>
 			</v-toolbar>
 			<v-card-text>
 				<v-data-table v-bind:headers="PaymentListHeader" :items="PaymentList" hide-actions class="elevation-1">
@@ -13,7 +13,7 @@
 						<td>{{props.item.ReferenceNo}}</td>
 						<td>{{props.item.Amount}}</td>
 						<td>{{props.item.DateCreated}}</td>
-						<td><v-switch v-model="props.item.Verified" @change="verifyPayment(props.item._id)" :disabled="props.item.Verified"></v-switch></td>
+						<td><v-switch v-model="props.item.Verified" @change="verifyPayment(props.item._id, props.item.PurchaseOrderId, props.item.Amount)" :disabled="props.item.Verified"></v-switch></td>
 					</template>
 				</v-data-table>
 			</v-card-text>
@@ -22,14 +22,19 @@
 		    {{ snackbar.Message }}
 		    <v-btn flat dark @click="Snackbar = !Snackbar"><v-icon>{{snackbar.Actions}}</v-icon></v-btn>
 		</v-snackbar>
+		<!-- payment dialog -->
+		<v-dialog max-width="700" v-model="addPaymentDialog">
+			<PaymentForm @close="closeDialog"/>
+		</v-dialog>
+		<!-- end -->
 	</v-container>
 </template>
 
 
 <script>
-	import { transactionUrl } from '../../helpers/apiurl'
+	import { transactionUrl, productUrl } from '../../helpers/apiurl'
 	import axios from 'axios'
-
+	import PaymentForm from './form/paymentform'
 	export default {
 		name: 'payments',
 		data () {
@@ -73,7 +78,8 @@
 					Actions: '',
 					Message: ''
 				},
-				Snackbar: false
+				Snackbar: false,
+				addPaymentDialog: false
 			}
 		},
 		mounted () {
@@ -102,7 +108,7 @@
 					
 				})
 			},
-			verifyPayment (id) {
+			verifyPayment (id, POId, amount) {
 				axios({
 					method: 'post',
 					url: transactionUrl + '/api/v1/payment/verify/' + id ,
@@ -111,7 +117,7 @@
 					}
 				})
 				.then(response => {
-					this.activateSnackbar('success', response.data.message, 'check')
+					this.updatePurchaseOrder(POId, amount)
 				})
 				.catch(err => {
 					this.activateSnackbar('error', 'Error in verifying payment', 'close')
@@ -123,7 +129,29 @@
 				this.snackbar.Actions  = actions
 
 				this.Snackbar = !this.Snackbar
-			}		
+			},
+			updatePurchaseOrder (id, amount) {
+				axios({
+					method: 'put',
+					url: productUrl + '/api/v1/purchaseorder/' + id + '/payment/' + amount,
+					headers: {
+						'Authorization' : 'Bearer ' + localStorage.getItem('AuthCode')
+					}
+				})
+				.then(response => {
+					this.activateSnackbar('success', response.data.message, 'check')
+				})
+				.catch(err => {
+					this.activateSnackbar('error', 'Error in verifying payment', 'close')
+				})
+			},
+			closeDialog () {
+				this.addPaymentDialog = !this.addPaymentDialog
+				this.getPaymentList()
+			}
+		},
+		components: {
+			PaymentForm
 		}
 	}
 </script>

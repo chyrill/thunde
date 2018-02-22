@@ -13,6 +13,7 @@
 								<td>{{props.item.PurchaseOrderNo}}</td>
 								<td>{{props.item.TotalAmount}}</td>
 								<td>{{props.item.Status}}</td>
+								<td>{{props.item.Balance}}</td>
 								<td>{{props.item.DateCreated}}</td>
 								<td><v-btn flat icon><v-icon>visibility</v-icon></v-btn></td>
 							</template>
@@ -45,7 +46,7 @@
 		</v-layout>
 		<!-- dialog box for payment -->
 		<v-dialog v-model="addPaymentDialog" max-width="800px">
-			<AddPaymentForm @close="addPaymentDialog=!addPaymentDialog"/>
+			<AddPaymentForm @close="refreshItem"/>
 		</v-dialog>
 		<!-- end dialog -->
 	</v-container>
@@ -78,8 +79,13 @@
 						value: 'Status'
 					},
 					{
+						text: 'Balance',
+						align: 'center',
+						value: 'Balance'
+					},
+					{
 						text: 'Date Purchased',
-						align: 'DateCreated',
+						align: 'center',
 						value: 'DateCreated'
 					},
 					{
@@ -160,6 +166,11 @@
 				.catch(err => {
 					
 				})
+			},
+			refreshItem () {
+				this.addPaymentDialog = !this.addPaymentDialog
+				this.getPaymentList()
+				this.getPuchaserOrderList()
 			}
  		},
 		computed: {

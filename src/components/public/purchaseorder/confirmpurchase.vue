@@ -89,7 +89,7 @@ export default {
                 }
             })
             .then(response => {
-                this.PurchaseOrderNumber = response.data.model._id
+                this.PurchaseOrderNumber = response.data.model.PurchaseOrderNo
                 this.updateQuotation()
             })
             .catch(err => {

@@ -16,6 +16,8 @@ import DeclinePurchase from '@/components/public/purchaseorder/declinepurchase'
 import ConfirmPurchase from '@/components/public/purchaseorder/confirmpurchase'
 import PurchaseOrder from '@/components/ProductsManagement/purchaseorder'
 import PaymentList from '@/components/TransactionManagement/payments'
+import Delivery from '@/components/ProductsManagement/delivery'
+
 Vue.use(Router)
 
 export default new Router({
@@ -114,6 +116,13 @@ export default new Router({
     {
       path: '/admin/payments',
       component: PaymentList,
+      meta: {
+        forAdmin: true
+      }
+    },
+    {
+      path: '/admin/delivery',
+      component: Delivery,
       meta: {
         forAdmin: true
       }
